@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>计算模型定义</title>
+    <script src="../../../qin/js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../../qin/js/Qin.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../common/report.base.css"/>
+    <link rel="stylesheet" type="text/css" href="../../common/report.view.css"/>
+    <link rel="stylesheet" type="text/css" href="model.css"/>
+    <script type="text/javascript" src="model_base.js"></script>
+    <script type="text/javascript" src="../../common/js/common.js"></script>
+    <script type="text/javascript" src="model_dialog.js"></script>
+</head>
+<body style="padding:10px;">
+<div id="ModelDesign">
+    <div position="left" title="计算模型" id="model_left_list"></div>
+    <div position="center" title="字段元数据" style="overflow:auto">
+        <div class="ModelDesign_field_add">
+            <input type="button" value="保存" id="save_column" class="l-button"/>&nbsp;<input type="button" value="新建" id="new_column" class="l-button"/>
+        </div>
+        <div>
+            <div id="ModelDesignTable" style="margin:0; padding:0;"></div>
+        </div>
+    </div>
+</div>
+<div id="ModelDesign_field_box" style="display:none;"></div>
+<div id="ModelDesign_add_box" style="display:none;"></div>
+<script type="text/javascript" src="model.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<sqlDefine>
+    <group name="RuleKpiResultSummary">
+        <sql name="summarySql">
+            select d.class_code,
+                d.date_cd,
+                d.comm_id,
+                d.dim_id,
+                d.kpi_code,
+                d.kpi_name,
+                d.latn_id,
+                d.rule_group_task_row_id,
+                sum(d.kpi_value) sum_value
+            from rule_kpi_result_detail d
+            where d.date_cd = ?
+            and d.kpi_code = ?
+            group by d.class_code,
+                    d.date_cd,
+                    d.comm_id,
+                    d.dim_id,
+                    d.kpi_code,
+                    d.kpi_name,
+                    d.latn_id,
+                    d.rule_group_task_row_id
+        </sql>
+        <sql name="summaryDbSide">
+            insert into RULE_KPI_RESULT_SUMMARY
+            (class_code,
+            date_cd,
+            comm_id,
+            dim_id,
+            kpi_code,
+            kpi_name,
+            latn_id,
+            rule_group_task_row_id,
+            sum_value)
+            select d.class_code,
+            d.date_cd,
+            d.comm_id,
+            d.dim_id,
+            d.kpi_code,
+            d.kpi_name,
+            d.latn_id,
+            d.rule_group_task_row_id,
+            sum(d.kpi_value) sum_value
+            from rule_kpi_result_detail d
+            where d.date_cd = ?
+            and d.kpi_code = ?
+            group by d.class_code,d.date_cd,d.comm_id,d.dim_id,d.kpi_code,d.kpi_name, d.latn_id,d.rule_group_task_row_id
+        </sql>
+        <sql name="insertSql">
+            insert into RULE_KPI_RESULT_SUMMARY
+            (
+            kpi_code,
+            kpi_name,
+            date_cd,
+            class_code,
+            sum_value,
+            latn_id,
+            comm_id,
+            dim_id,
+            rule_group_task_row_id
+            ) values(?,?,?,?,?,?,?,?,?)
+        </sql>
+        <sql name="fetchSql">
+            select t.* from RULE_KPI_RESULT_SUMMARY t where t.dim_id = ? and t.kpi_code = ? and t.date_cd = ?
+        </sql>
+        <sql name="delete">
+            delete from RULE_KPI_RESULT_SUMMARY t where t.dim_id = ? and t.kpi_code = ? and t.date_cd = ?
+        </sql>
+        <sql name="deleteWithDateCdKpiCode">
+            delete from RULE_KPI_RESULT_SUMMARY t where t.kpi_code = ? and t.date_cd = ?
+        </sql>
+        <sql name="deleteWithDateCd">
+            delete from RULE_KPI_RESULT_SUMMARY t where t.date_cd = ?
+        </sql>
+        <sql name="deleteWithKpiCode">
+            delete from RULE_KPI_RESULT_SUMMARY t where t.kpi_code = ?
+        </sql>
+    </group>
+    <group name="RuleKpiResultDetail">
+        <sql name="insertSql">
+            insert into rule_kpi_result_detail
+            (class_code,
+            comm_id,
+            date_cd,
+            dim_id,
+            expr,
+            kpi_code,
+            kpi_name,
+            kpi_value,
+            latn_id,
+            rule_group_task_row_id)
+            values
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        </sql>
+        <sql name="fetchSql">
+            select * from rule_kpi_result_detail t where t.dim_id = ? and t.kpi_code = ? and t.date_cd = ?
+        </sql>
+        <sql name="deleteWithDateCdKpiCode">
+            delete from rule_kpi_result_detail t where t.kpi_code = ? and t.date_cd = ?
+        </sql>
+        <sql name="deleteWithDateCd">
+            delete from rule_kpi_result_detail t where t.date_cd = ?
+        </sql>
+        <sql name="deleteWithKpiCode">
+            delete from rule_kpi_result_detail t where t.kpi_code = ?
+        </sql>
+    </group>
+</sqlDefine>

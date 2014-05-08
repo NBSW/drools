@@ -1,0 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.clear {
+    width: 0;
+    height: 0;
+    clear: both;
+}

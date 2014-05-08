@@ -1,0 +1,30 @@
+<style type="text/css">
+    #group_list > li {
+        margin: 1px 0 1px 0;
+        padding: 5px 5px 5px 10px;
+        cursor: pointer;
+    }
+
+    #group_list > li:hover {
+        background-color: #5bb6ff;
+    }
+
+    #group_list a {
+        float: right;
+        display: none;
+    }
+    #group_list li:hover a {
+        display: block;
+    }
+
+    .li_odd{
+        background-color:lightgrey;
+    }
+
+    .li_selected {
+        background-color: #0e70ff;
+    }
+</style>
+<ul id="group_list" style="height: 99%;overflow: auto;">
+</ul>
+<script type="text/javascript" src="../group/f_group_list.js"></script>

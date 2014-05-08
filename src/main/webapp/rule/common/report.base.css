@@ -1,0 +1,76 @@
+.clear {
+	clear: both;
+	width: 0;
+	height: 0;
+}
+input, label {
+	vertical-align: middle
+}
+label {
+	margin-right: 5px;
+}
+.l-text-wrapper {
+	display: inline-block;
+}
+.table1 {
+	width: 98%;
+	border: 1px solid #c5d8e9;
+	color: #555;
+	border-right: 0;
+	border-bottom: 0;
+	font-size: 12px;
+	margin: 5px auto;
+	border-collapse: collapse
+}
+.table1 tr th {
+	line-height: 20px;
+	height: 20px;
+	padding: 5px;
+	font-weight: bold;
+	border-bottom: 1px solid #c5d8e9;
+	border-right: 1px solid #c5d8e9;
+	background-color: #eff5fe;
+}
+.table1 tr td {
+	line-height: 20px;
+	height: 20px;
+	padding: 5px;
+	border-bottom: 1px solid #c5d8e9;
+	border-right: 1px solid #c5d8e9;
+}
+.table2 {
+	width: 98%;
+	border: 1px solid #c5d8e9;
+	color: #555;
+	border-right: 0;
+	border-bottom: 0;
+	font-size: 12px;
+	margin: 1px auto;
+	border-collapse: collapse;
+	margin-top: 5px;
+}
+.table2 tr th {
+	line-height: 14px;
+	height: 14px;
+	padding: 5px 3px;
+	font-weight: bold;
+	border-bottom: 1px solid #c5d8e9;
+	border-right: 1px solid #c5d8e9;
+	background-color: #eff5fe;
+}
+.table2 tr td {
+	line-height: 13px;
+	height: 13px;
+	padding: 5px 3px;
+	border-bottom: 1px dotted #ccc;
+	border-right: 1px dotted #ccc;
+}
+.table_left {
+	text-align: left;
+}
+.table_right {
+	text-align: right;
+}
+.table_center {
+	text-align: center;
+}

@@ -1,0 +1,58 @@
+.mTop2 {
+    margin-top: 4px;
+}
+
+.mTitle {
+    position: relative;
+    margin-right: 5px;
+    top: -6px;
+}
+
+.group_table{
+    margin: 4px;
+    padding:0 30px;
+    width: 97%;
+}
+
+.no_border{
+    border: 0;
+}
+
+.l-text-readonly {
+    margin: 0;
+    position: relative;
+    border: 1px solid #AECAF0;
+    height: 20px;
+    line-height: 20px;
+    width: 130px;
+    background: white;
+    border-bottom: 1;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+#group_layout {
+    width: 99%;
+    margin: 3px 0.5%;
+    height: 400px;
+    padding: 0;
+}
+
+.form_button_custom{
+    position: absolute;
+    top: -6px;
+    right: 20px;
+}
+
+.grid_normal{
+    width: 98%;
+    margin: 0 1%;
+}
+
+.panel_but{
+    position: fixed;
+    left: 100px;
+    top: 55px;
+}

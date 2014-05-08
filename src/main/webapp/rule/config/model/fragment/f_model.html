@@ -1,0 +1,76 @@
+<style type="text/css">
+    .table_normal span{color: #ff0000;margin-left: 5px;}
+</style>
+<div style="padding:10px 10px 0 0;" id="model_define_form">
+    <input type="hidden" name="tableDefineRowId" id="tableDefineRowId">
+    <table class="table_normal">
+        <tr>
+            <td width="14%" align="right">数据源<span>*</span></td>
+            <td width="35%">
+                <input name="dsCode" id="ds2" ltype="select" class="select180">
+            </td>
+            <td width="14%" align="right">接口表<span>*</span></td>
+            <td width="37%">
+                <input name="tableCode" type="text" id="tableCode2" class="input_normal"/>
+                <input type="button" id="syncColumn" class="l-button" value="同步" style=" width: 40px; ">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">模型名<span>*</span></td>
+            <td><input name="tableName" type="text" id="tableName" class="input_normal"/></td>
+            <td align="right">本地网</td>
+            <td>
+                <input name="latnId" id="latn2" ltype="select" class="select180">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">数据时间字段</td>
+            <td>
+                <input name="dateField" id="dateField" ltype="select" class="select180">
+            </td>
+            <td align="right">模型类型</td>
+            <td>
+                <label><input name="type" type="radio" checked value="1"/> 计算模型</label>
+                &nbsp;
+                <label><input name="type" type="radio" value="3"/> 参数模型</label>
+            </td>
+
+        </tr>
+        <tr id="param_data_model">
+            <td align="right">结果维度字段<span>*</span></td>
+            <td>
+                <input name="dimField" id="dimField" ltype="select" class="select180">
+            </td>
+            <td align="right">其他条件参数<span>*</span></td>
+            <td>
+                <input name="otherParam" id="otherParam" ltype="select" class="select180">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">数据获取SQL<span>*</span></td>
+            <td colspan="3">
+                <textarea name="selectSql" id="selectSql" cols="" rows="3" class="textarea_normal"
+                          style="width:90%"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">介绍</td>
+            <td colspan="3">
+                <textarea name="remark" id="remark" cols="" rows="3" class="textarea_normal"
+                          style="width:90%"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">创建人</td>
+            <td>
+                <input name="createUserName" type="text" id="createUserName" class="input_normal" readonly/>
+                <input name="createUserRowId" type="hidden" id="createUserRowId"/>
+            </td>
+            <td align="right">创建时间</td>
+            <td><input name="createDate" type="text" id="createDate" class="input_normal" readonly/></td>
+        </tr>
+    </table>
+    <div id="data_model_rel_param" style="margin-top:20px"></div>
+</div>
+<script type="text/javascript" src="../../plugin/jquery-dateFormat.min.js"></script>
+<script type="text/javascript" src="f_model.js"></script>

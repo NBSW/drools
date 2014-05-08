@@ -1,0 +1,37 @@
+<style type="text/css">
+    .model_li {
+        margin: 1px 0 1px 0;
+        padding: 5px 5px 5px 10px;
+        cursor: pointer;
+    }
+
+    .model_li:hover {
+        background-color: #5bb6ff;
+    }
+
+    .model_li_odd{
+        background: rgb(239, 255, 220);
+    }
+
+    .li_selected {
+        background-color: #0e70ff;
+    }
+</style>
+<div position="left" title="计算模型">
+    <div class="ModelDesign_left_top">
+        <table class="table_normal">
+            <tr>
+                <td align="right">搜　索：</td>
+                <td><input name="" type="text" id="tableCode" class="input_normal" style="min-width:135px;"/></td>
+                <td align="right">数据源：</td>
+                <td><select name="" id="ds" ltype="select" class="select">
+                </select></td>
+            </tr>
+        </table>
+    </div>
+    <div class="ModelDesign_left_con">
+        <ul id="table_result_ul">
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" src="../../../rule/config/model/f_model_query_base.js"></script>

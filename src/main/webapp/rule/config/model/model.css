@@ -1,0 +1,44 @@
+.tree_box_left{width:20%; border:1px solid #ccc; float:left;margin:8px 0 0 0;}
+.tree_title{ width:98%; padding-left:2%; float:left; background:url(images/title_bg.gif) repeat-x left bottom; line-height:30px; border-bottom:1px solid #ccc; font-weight:bold;}
+.tree_title p{ float:right; font-weight:normal;}
+.tree_con{width:98%; height:320px; float:right; text-align:left; padding:10px 1% 10px 0; overflow:auto;  overflow-x:hidden; }
+.tree_box_right{ width:78%; float:right;border:1px solid #ccc;margin:8px 0 0 0; }
+.tree_list{ width:99%; background:#fafafa; border:1px dashed #ccc; float:left; margin-top:5px; margin-bottom:5px;}
+.tree_list_title{ width:98%; float:left; line-height:24px; border-bottom:1px solid #ccc; background:#FFC; font-weight:bold; padding:0 1%;}
+.tree_list_title p{ float:right; font-weight:normal;}
+.tree_list_title p label{ margin-right:0;}
+.tree_list_in{ width:95%; float:left; padding:5px 2% 10px 2%;}
+.tree_list_in ul{ list-style:none; float:left; width:100%;}
+.tree_list_in ul li{ white-space:nowrap; margin-right:10px; margin-top:5px; float:left;}
+.tree_list_in ul li a{ float:left; line-height:26px; padding:0 8px; text-decoration:none; color:#0099cc; background:#e2f4fb;border-radius:4px;}
+.tree_list_in ul li a:hover{ background:#0099cc; color:#fff;}
+.tree_list_in ul li a.tree_hover{background:#0099cc; color:#fff;}
+.toolbar_bottom{ width:100%; float:left; padding:15px 0;}
+
+.ModelDesign_left_top{ float:left; width:100%;}
+.ModelDesign_left_con{overflow:auto;float:left; width:100%;}
+.ModelDesign_left_con ul{ width:100%; float:left;}
+.ModelDesign_left_con ul li{ width:100%; float:left; border-bottom:1px dotted #ccc;cursor: pointer;}
+.ModelDesign_left_con ul li a{width:94%; float:left; padding:3px 3% 3px 3%; color:#333; line-height:15px; text-decoration:none}
+.ModelDesign_left_con ul li a:hover{ background:#fbfbfb;}
+.ModelDesign_left_con ul li a.ModelDesign_hover{ background:#39C; color:#fff;}
+
+.ModelDesign_left_con ul li div{position: relative; float: right; padding: 2px 5px 2px 5px;display:none;margin-top: -21px;background-color: #aaa;color: #000;}
+.ModelDesign_left_con ul li div span{padding: 0 2px 0 2px;}
+.ModelDesign_left_con ul li:hover div{display:inline;}
+
+.ModelDesign_add{position:fixed; left:180px; top:12px;}
+.ModelDesign_field_add{position:fixed; right:11px; top:12px;}
+
+.table_default{ border-collapse:collapse; border:1px solid #b9d1e8; width:100%; background:#fff;}
+.table_default tr th{line-height: 22px;background: url(images/title_bg.jpg) repeat-x left top #d7e7f6;font-size: 14px;border-right:1px solid #b9d1e8; text-align:center;border-bottom:1px solid #b9d1e8; font-weight:bold;}
+.table_default tr td{border-right:1px solid #b9d1e8;border-bottom:1px solid #b9d1e8; padding:4px;}
+.table_default tr td.table_title{ background:#eaf2fe; font-weight:bold; padding:2px 4px; line-height:20px;}
+.table_default tr.table_bg1{ background:#fff;}
+.table_default tr.table_bg2{ background:#eaf3f8;}
+.table_default tr:hover.table_bg1,.table_default tr:hover.table_bg1{ background:#ffffcc;}
+
+.input_normal_e{min-width: 135px;}
+
+input[type="radio"]{margin-bottom: 0.17em;}
+input[type="checkbox"]{margin-bottom: 0.17em;}

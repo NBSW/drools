@@ -1,0 +1,338 @@
+/*规则计算*/
+.rule_box {
+    width: 100%;
+    padding-top: 10px;
+    float: left
+}
+
+.rule_box_left {
+    width: 100%;
+    float: left;
+}
+
+.rule_box_right {
+    width: 20%;
+    float: right
+}
+
+.rule_explain {
+    width: 94%;
+    float: left;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    min-height: 400px;
+    padding: 3%
+}
+
+.rule_explain ul {
+    width: 100%;
+    float: left;
+}
+
+.rule_explain ul li {
+    width: 100%;
+    float: left;
+    padding-bottom: 20px;
+}
+
+.rule_explain ul li strong {
+    font-weight: bold
+}
+
+.rule_explain h2 {
+    width: 100%;
+    float: left;
+    padding-bottom: 5px;
+    font-size: 18px;
+}
+
+.rule_con {
+    width: 100%;
+    float: left;
+}
+
+.rule_con ul {
+    width: 100%;
+    float: left;
+}
+
+.rule_con ul li {
+    min-height: 52px;
+    font-size: 14px;
+    line-height: 24px;
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 1px dotted #ccc;
+}
+
+.rule_con ul li p {
+    width: 100px;
+    float: right;
+    padding-top: 24px;
+    text-align: right
+}
+
+.rule_con ul li span {
+    font-size: 16px;
+    font-weight: bold
+}
+
+.rule_con_title {
+    font-weight: bold;
+    font-size: 16px;
+    width: 400px;
+}
+
+.rule_input {
+    border: 1px solid #aecaf0;
+    background: #fff;
+    padding: 0 3px;
+    height: 22px;
+    line-height: 22px;
+    font-weight: bold;
+    font-size: 16px;
+    width: 594px;
+}
+
+.rule_input_con {
+    position: absolute;
+    border: 1px solid #aecaf0;
+    width: 600px;
+    height: 150px;
+    background: #fff;
+    top: 25px;
+    left: 84px;
+    overflow-y: auto
+}
+
+.rule_input_box {
+    position: relative;
+}
+
+.rule_btn_left {
+    width: 18%;
+    padding: 10px 0 10px 2%;
+    float: left;
+    min-height: 70px;
+}
+
+.rule_btn_right {
+    width: 78%;
+    margin: 10px 0 10px -7px;
+    padding: 0 0 0 2%;
+    border-left: 1px dotted #ccc;
+    float: left;
+    min-height: 70px;
+}
+
+.rule_input_con a {
+    white-space: nowrap;
+    float: left;
+    margin: 0 10px 10px 0;
+    padding: 0 4px;
+    text-align: center;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: #666;
+    line-height: 22px;
+    min-width: 14px;
+}
+
+.rule_input_con a:hover {
+    background: #fff6df;
+    border: 1px solid #ffd060;
+    color: #f60;
+}
+
+.rule_btn_left h3, .rule_btn_right h3 {
+    width: 100%;
+    float: left;
+    font-size: 14px;
+    color: #333;
+    font-weight: normal;
+    padding: 0 0 5px 0;
+}
+
+.rule_btn_right_in {
+    width: 97%;
+    padding: 10px 1% 0 1%;
+    border: 1px dotted #ccc;
+    float: left;
+    margin-top: 5px;
+}
+
+.rule_btn_right_in h4 {
+    white-space: nowrap;
+    float: left;
+    padding: 0 4px 0 0;
+    text-align: center;
+    text-decoration: none;
+    color: #666;
+    line-height: 12px;
+    min-width: 14px;
+}
+
+.rule_btn_right h3 a {
+    float: right;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: #06c;
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+.rule_btn_right h3 a:hover {
+    background: none;
+    border: none;
+}
+
+.rule_table {
+    border: 1px solid #bababa;
+    width: 98%;
+    margin: 1% 1% 1% 0;
+    border-collapse: collapse;
+    background: #fff;
+    float: left;
+}
+
+.rule_table tr td {
+    padding: 2px 5px;
+    text-align: left;
+    line-height: 24px;
+}
+
+.rule_table tr td.rule_td {
+    padding-left: 15px;
+}
+
+.rule_table tr td.table {
+    float: left;
+}
+
+.rule_table tr td strong {
+    font-size: 14px;
+    color: #000;
+    font-weight: bold;
+    width: 50px;
+    display: inline-block;
+    position: relative;
+    line-height: 24px;
+}
+
+.rule_table tr td input, .rule_table tr td select {
+    vertical-align: middle;
+    position: relative;
+}
+
+.rule_table.rule_bg_gray {
+    background: #f0f0f0;
+}
+
+.rule_add {
+    width: 60px;
+    height: 24px;
+    border: none;
+    background: url(../../common/images/confirmation_btn.png) no-repeat left top;
+    text-align: center;
+    font-size: 12px;
+    color: #33528c;
+    cursor: pointer;
+}
+
+.rule_add:hover {
+    background-position: left bottom;
+}
+
+.rule_add_input {
+    min-width: 100px;
+    border: 1px solid #aecaf0;
+    background: #fff;
+    font-size: 12px;
+    padding: 0 3px;
+    height: 22px;
+    line-height: 22px;
+}
+
+.rule_del_group {
+    width: 24px;
+    height: 24px;
+    float: right;
+    text-indent: -300px;
+    overflow: hidden;
+    cursor: pointer;
+    border: none;
+    background: url(../../common/images/rule_del.png) no-repeat left top;
+}
+
+.rule_del_group:hover {
+    background-position: left bottom;
+}
+
+.rule_result {
+    padding: 1%;
+    float: left;
+    width: 96%;
+    line-height: 20px;
+    background: #FFC;
+    color: #C60
+}
+
+.rule_add_input {
+    margin-top: 1px;
+}
+
+.mTop2 {
+    margin-top: 4px;
+}
+
+.mTitle {
+    position: relative;
+    margin-right: 5px;
+    top: -6px;
+}
+
+.r {
+    padding: 0 2px 0 2px;
+}
+
+.rule_table_condition {
+    width: 100%;
+}
+
+.rule_td1 {
+    width: 42px;
+}
+
+.rule_td3 {
+    width: 70px;
+    float: right;
+}
+
+.rule_td2 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.rule_input_con {
+    display: none;
+    overflow-y: hidden;
+    height: auto;
+    z-index: 1;
+}
+
+.rule_param {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: -10px;
+    min-height: 150px;
+    height: auto;
+    max-height: 300px;
+}
+
+.not_edit_input {
+    border: 0;
+    color: #000;
+}

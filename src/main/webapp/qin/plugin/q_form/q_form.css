@@ -1,0 +1,46 @@
+.q_form {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.q_form .q_form_title {
+    background-color: #17244a;
+    padding: 4px;
+    color: #FFF;
+}
+
+.q_form .q_form_section {
+    background-color: #afdbf8;
+    padding: 6px;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.q_form .q_form_content {
+    border: 1px solid #afdbf8;
+}
+
+.q_form .q_form_content .q_form_content_row{
+    border-top: 1px solid #afdbf8;
+}
+
+.q_form .q_form_content .q_form_content_row .label, .q_form .q_form_content .q_form_content_row .value{
+    display: block;
+    padding:6px 4px;
+    float: left;
+}
+
+.q_form .q_form_content .q_form_content_row .label{
+    text-align: right;
+    background-color: rgba(242, 242, 242, 0.67);
+}
+
+.q_form .q_form_content .q_form_content_row .value {
+    border-left: 1px solid #afdbf8;
+}
+
+.q_form .q_form_content .q_form_content_row .value .button_default {
+    padding: 2px 4px;
+}

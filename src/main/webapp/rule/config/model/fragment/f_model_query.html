@@ -1,0 +1,35 @@
+<div position="left" title="计算模型">
+    <div class="ModelDesign_add">
+        <input type="button" value="新建" id="new_model" class="l-button"/>
+    </div>
+    <div class="ModelDesign_left_top">
+        <table class="table_normal">
+            <tr>
+                <td align="right">搜　索：</td>
+                <td><input name="" type="text" id="tableCode" class="input_normal" style="min-width:135px;"/></td>
+            </tr>
+            <tr>
+                <td align="right">本地网：</td>
+                <td><select name="" id="latn" ltype="select" class="select">
+                </select></td>
+            </tr>
+            <tr>
+                <td align="right">数据源：</td>
+                <td><select name="" id="ds" ltype="select" class="select">
+                </select></td>
+            </tr>
+            <tr>
+                <td align="right">类　型：</td>
+                <td>
+                    <label><input name="Mtypebox" type="checkbox" value="1"/> 计算模型</label>
+                    &nbsp;
+                    <label><input name="Mtypebox" type="checkbox" value="3"/> 参数模型</label></td>
+            </tr>
+        </table>
+    </div>
+    <div class="ModelDesign_left_con">
+        <ul id="table_result_ul">
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" src="../../../rule/config/model/f_model_query.js"></script>

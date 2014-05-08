@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-4.0.xsd"
+       default-lazy-init="true">
+
+    <bean id="authAccessorImplService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"
+          lazy-init="false">
+        <property name="serviceInterface" value="com.zjhcsoft.biap.adaptor.service.AuthAccessor"/>
+        <property name="wsdlDocumentUrl" value="${biap.url}/webService/OutAuthService?wsdl"/>
+        <property name="namespaceUri" value="${biap.namespaceUri}"/>
+        <property name="serviceName" value="AuthAccessorImplService"/>
+        <property name="portName" value="AuthAccessorImplPort"/>
+    </bean>
+
+    <bean id="objectAccessorImplService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"
+          lazy-init="false">
+        <property name="serviceInterface" value="com.zjhcsoft.biap.adaptor.service.ObjectAccessor"/>
+        <property name="wsdlDocumentUrl" value="${biap.url}/webService/WebService?wsdl"/>
+        <property name="namespaceUri" value="${biap.namespaceUri}"/>
+        <property name="serviceName" value="ObjectAccessorImplService"/>
+        <property name="portName" value="ObjectAccessorImplPort"/>
+    </bean>
+
+    <bean id="attributeAccessorImplService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"
+          lazy-init="false">
+        <property name="serviceInterface" value="com.zjhcsoft.biap.adaptor.service.AttributeAccessor"/>
+        <property name="wsdlDocumentUrl" value="${biap.url}/webService/AttrAccessor?wsdl"/>
+        <property name="namespaceUri" value="${biap.namespaceUri}"/>
+        <property name="serviceName" value="AttributeAccessorImplService"/>
+        <property name="portName" value="AttributeAccessorImplPort"/>
+    </bean>
+    <!-- 公共数据源RestFull webservice -->
+    <bean id="authService" class="com.zjhcsoft.jaxrs.AuthServiceImpl">
+        <property name="objectAccessor" ref="objectAccessorImplService"/>
+        <property name="serviceClass" value="com.zjhcsoft.shreport.webservice.ShReportRest"/>
+        <property name="serviceUrl" value="${shreport.url}"/>
+    </bean>
+</beans>

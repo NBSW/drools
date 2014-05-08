@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>计算公式设置</title>
+    <script src="../../../qin/js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../../qin/js/Qin.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../common/report.base.css"/>
+    <link rel="stylesheet" type="text/css" href="../../common/report.view.css"/>
+    <link rel="stylesheet" type="text/css" href="kpi.css"/>
+    <script type="text/javascript" src="../../plugin/Math.uuid.js"></script>
+</head>
+<body style="overflow:auto">
+<div class="tab_box">
+    <div class="tab_con">
+        <h1 id="search_title_container">计算公式设置</h1>
+    </div>
+</div>
+<div style="padding:10px;">
+    <div class="table_box">
+        <input type="hidden" id="ruleKpiDefineRowId"/>
+        <input type="hidden" id="createUserName"/>
+        <input type="hidden" id="createUserRowId"/>
+        <input type="hidden" id="createDate"/>
+        <input type="hidden" id="status"/>
+        <table class="table_normal" id="baseSetForm">
+            <tr>
+                <td width="10%" align="right">指标代码</td>
+                <td width="23%">
+                    <input name="kpiCode" type="text" id="kpiCode" class="input_normal"/>
+                </td>
+                <td width="10%" align="right">指标名称</td>
+                <td width="23%">
+                    <input name="kpiName" type="text" id="kpiName" class="input_normal"/>
+                </td>
+                <td width="10%" align="right">科目代码</td>
+                <td width="23%">
+                    <input name="classId" type="text" id="classId" class="input_normal"/>
+                    <!--readonly title="和KPI编码一致"-->
+                </td>
+            </tr>
+            <tr>
+                <td align="right">本地网名称</td>
+                <td>
+                    <input name="" type="text" id="latn" readonly class="input_normal"/>
+                    <input name="" type="hidden" id="latnId"/>
+                </td>
+                <td align="right">是否为组合</td>
+                <td tname="otherParam">
+                    <input name="type" type="checkbox" id="zh"/>
+                    <label for="zh">是</label>
+                </td>
+                <td align="right" tname="otherParam">其他参数:</td>
+                <td tname="otherParam">
+                    <input id="otherParam" type="text" class="input_normal"/>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">介绍</td>
+                <td colspan="5">
+                    <textarea id="remark" cols="100" rows="1" class="textarea_normal"
+                              style="width:99%;height:60px"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="rule_box">
+        <div class="rule_con">
+            <ul class="rule_list"/>
+        </div>
+    </div>
+    <div class="rule_box" id="rule1" style="margin-bottom: 10px;">
+        <input type="button" value="新建公式" class="l-button" onclick="$ruleContainer.newRule();$('#rule1').hide();"/>
+        <input type="button" value="保存规则定义" class="l-button" style="width: 100px;" onclick="create();"/>
+    </div>
+</div>
+<div class="rule_input_con">
+    <div class="rule_btn_left">
+        <h3>基本运算符</h3>
+        <a href="####" type="when_op" code="+">+</a>
+        <a href="####" type="when_op" code="-">-</a>
+        <a href="####" type="when_op" code="*">*</a>
+        <a href="####" type="when_op" code="/">/</a>
+        <a href="####" type="when_op" code="(">(</a>
+        <a href="####" type="when_op" code=")">)</a>
+    </div>
+    <div class="rule_btn_right">
+        <h3>基本参数模型<b><a href="####" onclick="$(this).closest('div.rule_input_con').hide()" style="margin-right: 10px;">关闭</a></b>
+        </h3>
+        <ul class="rule_param"></ul>
+    </div>
+</div>
+<div id="term_box" style="display:none;">
+    <div>
+        <span class="mTitle">数据模型选择:</span>
+        <input type="text" id="tableSelect" style="color: #000;"/>
+
+        <div class="rule_result">如果:<span></span></div>
+        <table id="main_rule_group" class="rule_table marTop">
+            <tr>
+                <td>
+                    <input type="button" value="增加分组" class="l-button role-group-add"/>
+                    <input type="button" value="增加条件" class="rule_add role-rule-add"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="../../common/js/common.js"></script>
+<script type="text/javascript" src="kpi_list.js"></script>
+<script type="text/javascript" src="template.js"></script>
+<script type="text/javascript" src="kpiBase.js"></script>
+<script type="text/javascript" src="kpiFilter.js"></script>
+<script type="text/javascript" src="kpiRule.js"></script>
+<script type="text/javascript" src="kpiRuleClick.js"></script>
+</body>
+</html>

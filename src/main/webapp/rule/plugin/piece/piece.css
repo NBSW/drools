@@ -1,0 +1,25 @@
+.piece {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.piece .piece_title {
+    height: 20px;
+    padding: 4px;
+    font-size: 10pt;
+    font-weight: bold;
+    background-color: #afdbf8;
+    border-top: 1px solid #9CBAE7;
+    border-left: 1px solid #9CBAE7;
+    border-right: 1px solid #9CBAE7;
+}
+
+.piece .piece_tools{
+    border-top: 1px solid #9CBAE7;
+}
+
+.piece .piece_content {
+    overflow: auto;
+}

@@ -1,0 +1,44 @@
+<div style="padding:10px 10px 0 0;">
+    <table class="table_normal" id="f_column_table">
+        <tr>
+            <td width="20%" align="right">模型名</td>
+            <td width="80%"></td>
+        </tr>
+        <tr>
+            <td align="right">接口表</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td align="right">本地网</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td align="right">字段编码</td>
+            <td><input name="name" type="text" id="column_code" class="input_normal"/></td>
+        </tr>
+        <tr>
+            <td align="right">字段名</td>
+            <td><input name="label" type="text" id="column_name" class="input_normal"/></td>
+        </tr>
+        <tr>
+            <td align="right">数据类型</td>
+            <td>
+                <select name="type" id="column_type" ltype="select" class="select180 input_normal" onchange="type_change_handler(this)">
+                    <option value="">请选择</option>
+                    <option value="String">文本</option>
+                    <option value="Date">日期</option>
+                    <option value="NUMBER">数字</option>
+                </select>
+                <input type="hidden" name="number" id="number">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">字段类型</td>
+            <td>
+                <label><input name="dm" type="radio" value="dim" checked/> 维度</label>&nbsp;
+                <label><input name="dm" type="radio" value="mea"/> 度量</label>
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript" src="f_column.js"></script>

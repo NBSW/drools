@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>考核主题管理</title>
+    <script src="../../../qin/js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../../../qin/js/Qin.js"></script>
+    <script type="text/javascript" src="../../base.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../common/report.base.css"/>
+    <link rel="stylesheet" type="text/css" href="../../common/report.view.css"/>
+    <link rel="stylesheet" type="text/css" href="group.css"/>
+    <script type="text/javascript">
+        var $view_mode = false;
+    </script>
+</head>
+<body style="overflow:auto">
+<div class="tab_box">
+    <div class="tab_con">
+        <h1 id="search_title_container">考核主题管理</h1>
+    </div>
+</div>
+<div id="group_layout">
+    <div position="left" title="考核主题列表" style="height: 475px;">
+        <div class="panel_but">
+            <input type="button" value="新建" id="create_group_new" class="l-button"/>
+        </div>
+        <div id="group_list_container" style="height: 100%;"></div>
+    </div>
+    <div position="center" title="考核主题管理">
+        <div id="group_form" class="group_table"></div>
+        <div id="group_kpi_grid"></div>
+        <div id="cron_field" style="position: relative;top: 6px;float: left;left: -40px;display: none;"></div>
+    </div>
+</div>
+<div id="model_container" style="display: none;"></div>
+<script type="text/javascript" src="../../common/js/common.js"></script>
+<script type="text/javascript" src="../../plugin/jquery-dateFormat.min.js"></script>
+<script type="text/javascript" src="kpi_grid.js"></script>
+<script type="text/javascript" src="group.js"></script>
+<script type="text/javascript" src="group_dialog.js"></script>
+</body>
+</html>
