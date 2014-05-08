@@ -1,0 +1,20 @@
+.q_textarea_container{
+    border: 1px solid #1a5d97;
+}
+
+.q_textarea_formatbar,.q_textarea_toolbar {
+    background-color: #1a5d97;
+    padding: 4px;
+    color: #FFF;
+    font-size: 10pt;
+}
+
+.q_textarea_toolbar span {
+    margin: 0 8px;
+    cursor: pointer;
+}
+
+.item {
+    padding: 1px;
+    border: 1px solid #900600;
+}
