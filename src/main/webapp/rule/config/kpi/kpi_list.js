@@ -46,11 +46,12 @@ function saveOrUpdate() {
         ruleRemark: "",
         createUserName: $('#createUserName').val(),
         createUserRowId: $('#createUserRowId').val(),
-        status: $('#status').val()
+        status: $('#status').val(),
+        summary:$('#summary').is(":checked")
     };
 
     data[f_kpi_constants.OTHER_PARAM] = $.trim($('#'+f_kpi_constants.OTHER_PARAM).val());
-
+    data.relKPIs = $Kpi_Rel_KPI.selected();
     var createDate = $('#createDate').val();
     if (createDate.length > 0) {
         data.createDate = createDate;

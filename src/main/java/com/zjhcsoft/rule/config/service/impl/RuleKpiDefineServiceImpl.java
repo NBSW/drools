@@ -4,6 +4,7 @@ import com.zjhcsoft.rule.common.service.impl.BaseServiceImpl;
 import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
 import com.zjhcsoft.rule.config.repository.RuleKpiDefineRepository;
 import com.zjhcsoft.rule.config.service.RuleKpiDefineService;
+import com.zjhcsoft.rule.config.util.RuleKpiCache;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,22 @@ import java.util.List;
 public class RuleKpiDefineServiceImpl extends BaseServiceImpl<RuleKpiDefine, RuleKpiDefineRepository> implements RuleKpiDefineService {
     @Override
     public RuleKpiDefine findByKpiCode(String kpiCode) {
-        return repository.findByKpiCode(kpiCode);
+        RuleKpiDefine kpiDefine = repository.findByKpiCode(kpiCode);
+        RuleKpiCache.update(kpiCode,kpiDefine);
+        return kpiDefine;
+    }
+
+    @Override
+    public RuleKpiDefine update(RuleKpiDefine kpiDefine) {
+        kpiDefine = super.update(kpiDefine);
+        RuleKpiCache.update(kpiDefine.getKpiCode(),kpiDefine);
+        return kpiDefine;
+    }
+
+    @Override
+    public void delete(RuleKpiDefine kpiDefine) {
+        RuleKpiCache.update(kpiDefine.getKpiCode(),null);
+        super.delete(kpiDefine);
     }
 
     @Override
@@ -29,4 +45,6 @@ public class RuleKpiDefineServiceImpl extends BaseServiceImpl<RuleKpiDefine, Rul
         Sort sort = new Sort("type","ruleKpiDefineRowId");
         return repository.findByRuleKpiDefineRowIdIn(rowIds,sort);
     }
+
+
 }

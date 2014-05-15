@@ -36,5 +36,8 @@ var $$Edit_Kpi = {
         if(kpiDefine[f_kpi_constants.OTHER_PARAM]){
             $('#'+f_kpi_constants.OTHER_PARAM).val(kpiDefine[f_kpi_constants.OTHER_PARAM]);
         }
+        if(!kpiDefine.summary){
+            $('#summary').click();
+        }
     }
 };

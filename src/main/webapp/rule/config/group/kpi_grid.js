@@ -26,13 +26,22 @@ var $$Kpi_Grid = {
         var liger_option = {
             columns: [
                 { display: '指标编码', name: 'kpiCode', align: 'left', width: 120 },
-                { display: '指标名称', name: 'kpiName', align: 'left', minWidth: 60 },
+                { display: '指标名称', name: 'kpiName', align: 'left', minWidth: 60, render: function (row, t, val) {
+                    return "<span title='" + row.ruleKpiDefineRowId + "'>" + val + "</span>"
+                }},
                 { display: '基础/组合', name: 'type', width: 80, render: function (row, t, val) {
+                    var m = "";
                     if (val == 1) {
-                        return "组合";
+                        m = "组合";
                     } else if (val == 0) {
-                        return "基础";
+                        m = "基础";
+                        if (row.summary) {
+                            m += "[汇总]"
+                        } else {
+                            m += "[清单]";
+                        }
                     }
+                    return m;
                 }},
                 {display: '运行状态', name: 'status', render: function (i, j, k) {
                     if (!i.message)
@@ -42,6 +51,8 @@ var $$Kpi_Grid = {
                         html += "正在运行";
                     } else if (9 == k) {
                         html += "完成";
+                    } else if (9 == k) {
+                        html += "发生异常";
                     }
                     return html + "</span>";
                 }},

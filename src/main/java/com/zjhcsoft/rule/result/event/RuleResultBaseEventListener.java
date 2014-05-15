@@ -56,12 +56,17 @@ public abstract class RuleResultBaseEventListener<T, S extends RuleKpiResultBase
             } else {
                 mapResult = (Map<String, Object>) o;
             }
-            ruleKpiResults.add(extractItem(mapResult, dataTableDefine, ruleGroupTask, ruleKpiDefine));
+            T result = extractItem(mapResult, dataTableDefine, ruleGroupTask, ruleKpiDefine);
+            if (null != result) {//DimValue 为空时 不保存
+                ruleKpiResults.add(result);
+            }
             if (!iterator.hasNext() || ruleKpiResults.size() == 3000) {
+                logger.debug("开始结果保存 {}", ruleKpiResults.size());
                 try {
                     getService().save(ruleKpiResults);
+                    logger.debug("结果保存成功 {}", ruleKpiResults.size());
                 } catch (Exception e) {
-                    logger.error("结果保存异常  {}", e);
+                    logger.error("结果保存异常 KPI:{}-{}\n  {}", ruleKpiDefine.getKpiCode(), ruleKpiDefine.getKpiName(), e.toString());
                     e.printStackTrace();
                 } finally {
                     ruleKpiResults.clear();

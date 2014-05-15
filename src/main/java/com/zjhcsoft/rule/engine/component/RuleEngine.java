@@ -7,6 +7,7 @@
 package com.zjhcsoft.rule.engine.component;
 
 import com.zjhcsoft.rule.engine.util.ResultMessage;
+import org.apache.commons.lang3.StringUtils;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public class RuleEngine {
             logger.error("规则执行中发生异常{}  规则脚本:{}", e.toString(), ruleScript);
             e.printStackTrace();
             return new AsyncResult<>(new ResultMessage(facts.size(), false, index));
-        }finally {
+        } finally {
             if (session != null) {
                 session.dispose();
             }
@@ -97,6 +98,17 @@ public class RuleEngine {
 
     public void removeRuleBase(String ruleContent) {
         ruleKnowledgeStore.removeRuleBase(ruleContent);
+    }
+
+    public void updateKnowledge(String new_script, String old_script) {
+        if (StringUtils.isBlank(new_script.trim())) {
+            return;
+        }
+        try {
+            ruleKnowledgeStore.updateKnowledgeBase(new_script, old_script);
+        } catch (Exception e) {
+            logger.error("规则更新异常:{}", e.toString());
+        }
     }
 
     public boolean checkRuleValid(String ruleContent) {

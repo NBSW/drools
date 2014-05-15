@@ -10,7 +10,7 @@ public class RuleKpiResultDetail implements Serializable {
 
     private String kpiName;
     private String classCode;
-    private double kpiValue;
+    private float kpiValue;
     private String expr;
     private Long ruleGroupTaskRowId;
     private String kpiCode;
@@ -35,11 +35,11 @@ public class RuleKpiResultDetail implements Serializable {
         this.classCode = classCode;
     }
 
-    public double getKpiValue() {
+    public float getKpiValue() {
         return kpiValue;
     }
 
-    public void setKpiValue(double kpiValue) {
+    public void setKpiValue(float kpiValue) {
         this.kpiValue = kpiValue;
     }
 

@@ -3,20 +3,17 @@ package com.zjhcsoft.rule.datadispose.util;
 import com.zjhcsoft.rule.common.RuleConstants;
 import com.zjhcsoft.rule.config.entity.RuleGroupTask;
 import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
-import com.zjhcsoft.rule.config.entity.RuleRelation;
 import com.zjhcsoft.rule.config.service.RuleKpiDefineService;
 import com.zjhcsoft.rule.config.service.RuleRelationService;
-import com.zjhcsoft.rule.datadispose.service.RuleMixServiceImpl;
-import com.zjhcsoft.rule.datadispose.service.RuleServiceImpl;
 import com.zjhcsoft.rule.datadispose.service.RuleBaseServiceImpl;
 import com.zjhcsoft.rule.datadispose.service.RuleService;
+import com.zjhcsoft.rule.datadispose.service.RuleServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -11,6 +11,7 @@ import com.zjhcsoft.rule.config.service.RuleGroupService;
 import com.zjhcsoft.rule.config.service.RuleGroupTaskService;
 import com.zjhcsoft.rule.config.service.RuleKpiDefineService;
 import com.zjhcsoft.rule.config.service.RuleRelationService;
+import com.zjhcsoft.rule.config.util.RuleTaskCreator;
 import com.zjhcsoft.rule.config.vo.RuleKpiLogVo;
 import com.zjhcsoft.rule.log.entity.RuleKpiProcessLog;
 import com.zjhcsoft.rule.log.service.RuleKpiProcessLogService;
@@ -42,16 +43,33 @@ public class RuleGroupController extends BaseController<RuleGroupService, RuleGr
     @Inject
     private RuleKpiProcessLogService logService;
 
+    /**
+     * 根据状态查询 查询条件带本地网信息过滤 Biap user_type 为 10 的 不带该条件
+     * @param s
+     * @param request
+     * @return
+     */
     @RequestMapping("{s}/status")
     public ResponseVO findByStatus(@PathVariable int s, HttpServletRequest request) {
         return ControllerHelper.success(service.findAllByStatus(s, latnIdHelper.getLatnId(request.getSession())));
     }
 
+    /**
+     * 查询所有考核主题
+     * @param request
+     * @return
+     */
     @RequestMapping("")
     public ResponseVO findAll(HttpServletRequest request) {
         return ControllerHelper.success(service.findAll(latnIdHelper.getLatnId(request.getSession())));
     }
 
+    /**
+     * 查询该主题下所有公式规则 带分页
+     * @param groupId
+     * @param httpServletRequest
+     * @return
+     */
     @RequestMapping("{groupId}/kpiList")
     public ResponseVO groupKpiList(@PathVariable Long groupId, HttpServletRequest httpServletRequest) {
         int page[] = ControllerHelper.getPageParameters(httpServletRequest);
@@ -65,6 +83,11 @@ public class RuleGroupController extends BaseController<RuleGroupService, RuleGr
         }
     }
 
+    /**
+     * 确认活动是否可以删除
+     * @param groupId
+     * @return
+     */
     @RequestMapping("check/{groupId}")
     public ResponseVO checkDeleteAble(@PathVariable Long groupId) {
         if (null != groupId) {
@@ -74,6 +97,11 @@ public class RuleGroupController extends BaseController<RuleGroupService, RuleGr
         return ControllerHelper.success(true);
     }
 
+    /**
+     * 封装日志信息 供前台展现
+     * @param kpiDefineList
+     * @return
+     */
     private List<RuleKpiLogVo> packageLog(List<RuleKpiDefine> kpiDefineList) {
         List<RuleKpiLogVo> logVoList = new ArrayList<>();
         for (RuleKpiDefine define : kpiDefineList) {
@@ -88,6 +116,11 @@ public class RuleGroupController extends BaseController<RuleGroupService, RuleGr
     @Inject
     private RuleGroupTaskService groupTaskService;
 
+    /**
+     * 删除活动 删除时删除该活动下面的所有规则公示 以及由该主题生成的所有任务
+     * @param pk
+     * @return
+     */
     @Override
     public ResponseVO delete(@PathVariable String pk) {
         if (StringUtils.isNumeric(pk)) {
@@ -107,7 +140,20 @@ public class RuleGroupController extends BaseController<RuleGroupService, RuleGr
             //删除任务
             return super.delete(pk);
         } else {
-            return ControllerHelper.success("参数");
+            return ControllerHelper.success("参数不完整");
+        }
+    }
+
+    @Inject
+    private RuleTaskCreator taskCreator;
+
+    @RequestMapping("task/{rowId}")
+    public ResponseVO createTask(@PathVariable Long rowId){
+        if(null!=rowId) {
+            RuleGroup group = service.get(rowId);
+            return ControllerHelper.success(taskCreator.create(group));
+        }else{
+            return ControllerHelper.badRequest("参数不正确");
         }
     }
 }

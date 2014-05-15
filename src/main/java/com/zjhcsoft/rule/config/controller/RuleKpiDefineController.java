@@ -9,14 +9,12 @@ import com.zjhcsoft.rule.common.RuleConstants;
 import com.zjhcsoft.rule.common.RuleConstants.RuleJsonKey;
 import com.zjhcsoft.rule.common.RuleConstants.Type;
 import com.zjhcsoft.rule.common.controller.BaseController;
-import com.zjhcsoft.rule.config.entity.RuleGroup;
-import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
-import com.zjhcsoft.rule.config.entity.RuleRelation;
-import com.zjhcsoft.rule.config.entity.RuleTableDefine;
+import com.zjhcsoft.rule.config.entity.*;
 import com.zjhcsoft.rule.config.service.RuleGroupService;
 import com.zjhcsoft.rule.config.service.RuleKpiDefineService;
 import com.zjhcsoft.rule.config.service.RuleRelationService;
 import com.zjhcsoft.rule.config.service.RuleTableDefineService;
+import com.zjhcsoft.rule.config.util.DroolsScriptUtil;
 import com.zjhcsoft.rule.config.vo.RuleKpiDefineVo;
 import com.zjhcsoft.rule.engine.parser.Parser;
 import com.zjhcsoft.rule.engine.util.EngineUtil;
@@ -43,13 +41,10 @@ public class RuleKpiDefineController extends BaseController<RuleKpiDefineService
     private RuleRelationService ruleRelationService;
 
     @Inject
-    private Parser drlParser;
-
-    @Inject
-    private RuleTableDefineService tblService;
-
-    @Inject
     private RuleGroupService ruleGroupService;
+
+    @Inject
+    private DroolsScriptUtil scriptUtil;
 
     @Override
     public ResponseVO get(@PathVariable String pk) {
@@ -73,8 +68,11 @@ public class RuleKpiDefineController extends BaseController<RuleKpiDefineService
         ResponseVO response = super.save(ruleKpiDefine);
         if (null != response.getBody() && null != groupId) {
             ruleKpiDefine = (RuleKpiDefine) response.getBody();
-            Set<String> baseKpi = generateRuleScript(ruleKpiDefine);
-            dealMixKpiRelation(ruleKpiDefine, baseKpi);
+            Set<String> baseKpi = scriptUtil.generateRuleScript(ruleKpiDefine,false);
+            dealMixKpiRelation(ruleKpiDefine, baseKpi, Type.MIX_BASE_KPI_REL);
+            if (StringUtils.isNotBlank(ruleKpiDefine.getRelKPIs())) {
+                dealMixKpiRelation(ruleKpiDefine, Arrays.asList(ruleKpiDefine.getRelKPIs().split(",")), Type.MIX_BASE_KPI_REL_2);
+            }
             ruleKpiDefine = service.update(ruleKpiDefine);
             String _type;
             if (Type.MIX_KPI == ruleKpiDefine.getType()) {
@@ -92,12 +90,46 @@ public class RuleKpiDefineController extends BaseController<RuleKpiDefineService
         if (null == ruleKpiDefine.getStatus()) {
             ruleKpiDefine.setStatus(RuleConstants.Status.NORMAL);
         }
-        RuleKpiDefine oldRuleKpiDefine = service.get(Long.valueOf(pk));
+        Long rowId = Long.valueOf(pk);
+        RuleKpiDefine oldRuleKpiDefine = service.get(rowId);
+        //处理组合基础变化
+        dealGroupRel(ruleKpiDefine, rowId);
         EngineUtil.removeRuleBase(oldRuleKpiDefine.getScriptRule());
-        Set<String> baseKpi = generateRuleScript(ruleKpiDefine);
-        dealMixKpiRelation(ruleKpiDefine, baseKpi);
+        Set<String> baseKpi = scriptUtil.generateRuleScript(ruleKpiDefine,false);
+        dealMixKpiRelation(ruleKpiDefine, baseKpi, Type.MIX_BASE_KPI_REL);
+        if (StringUtils.isBlank(ruleKpiDefine.getRelKPIs())) {
+            ruleKpiDefine.setRelKPIs("");
+        }
+        dealMixKpiRelation(ruleKpiDefine, Arrays.asList(ruleKpiDefine.getRelKPIs().split(",")), Type.MIX_BASE_KPI_REL_2);
         return super.update(pk, ruleKpiDefine);
 
+    }
+
+    private void dealGroupRel(RuleKpiDefine ruleKpiDefine, Long rowId) {
+        List<RuleRelation> relationList = ruleRelationService.queryByTargetIdRelType(rowId, new String[]{Type.RULE_GROUP_MIX_RULE_KPI, Type.RULE_GROUP_BASE_RULE_KPI});
+        ruleRelationService.deleteAllByTargetId(rowId, new String[]{Type.RULE_GROUP_MIX_RULE_KPI, Type.RULE_GROUP_BASE_RULE_KPI});
+        RuleRelation relGroup = new RuleRelation(new RuleRelationPK());
+        relGroup.getId().setFromId(relationList.get(0).getId().getFromId());
+        relGroup.getId().setTargetId(rowId);
+        if (Type.MIX_KPI == ruleKpiDefine.getType()) {
+            relGroup.getId().setRelType(Type.RULE_GROUP_MIX_RULE_KPI);
+        } else {
+            relGroup.getId().setRelType(Type.RULE_GROUP_BASE_RULE_KPI);
+        }
+        ruleRelationService.create(relGroup);
+    }
+
+    @RequestMapping("rel/{rowId}")
+    public ResponseVO getRelKpi(@PathVariable Long rowId) {
+        List<Long> relKPIs = ruleRelationService.queryIdByFromIdRelType(rowId, new String[]{Type.MIX_BASE_KPI_REL_2});
+        List<String> kpiCodes = new ArrayList<>();
+        for (Long id : relKPIs) {
+            RuleKpiDefine define = service.get(id);
+            if (null != define) {
+                kpiCodes.add(define.getKpiCode());
+            }
+        }
+        return ControllerHelper.success(kpiCodes);
     }
 
     /**
@@ -106,184 +138,16 @@ public class RuleKpiDefineController extends BaseController<RuleKpiDefineService
      * @param ruleKpiDefine
      * @param baseKpi
      */
-    private void dealMixKpiRelation(RuleKpiDefine ruleKpiDefine, Set<String> baseKpi) {
-        ruleRelationService.deleteAllByFromId(ruleKpiDefine.getRuleKpiDefineRowId(), new String[]{Type.MIX_BASE_KPI_REL});
+    private void dealMixKpiRelation(RuleKpiDefine ruleKpiDefine, Collection<String> baseKpi, String relType) {
+        ruleRelationService.deleteAllByFromId(ruleKpiDefine.getRuleKpiDefineRowId(), new String[]{relType});
         if (null != baseKpi && baseKpi.size() > 0) {
             for (String kpiCode : baseKpi) {
                 RuleKpiDefine kpiDefine = service.findByKpiCode(kpiCode);
                 if (null != kpiDefine) {
-                    ruleRelationService.create(ruleKpiDefine.getRuleKpiDefineRowId(), kpiDefine.getRuleKpiDefineRowId(), Type.MIX_BASE_KPI_REL);
+                    ruleRelationService.create(ruleKpiDefine.getRuleKpiDefineRowId(), kpiDefine.getRuleKpiDefineRowId(), relType);
                 }
             }
         }
-    }
-
-    /**
-     * 生规则成脚本
-     *
-     * @param ruleKpiDefine
-     */
-
-    private Set<String> generateRuleScript(RuleKpiDefine ruleKpiDefine) {
-        JSONObject $param = new JSONObject();
-        JSONObject object = JSON.parseObject(ruleKpiDefine.getScriptData());
-        JSONArray tables = object.getJSONArray(RuleJsonKey.TABLE_MODEL);
-
-        JSONObject prepared = prepareDeclare(tables);
-
-        //数据模型ID
-        String dataModelId = String.valueOf(prepared.remove(RuleJsonKey.DATA_MODEL_ID));
-
-        $param.putAll(prepared);
-
-        $param.put(RuleJsonKey.PACKAGE_NAME, EngineUtil.getPackageName(ruleKpiDefine.getRuleKpiDefineRowId()));
-        JSONArray imports = new JSONArray();
-        boolean isMixKpi = ruleKpiDefine.getType() == Type.MIX_KPI;
-        if (isMixKpi) {
-            imports.add("function com.zjhcsoft.util.Value.SummaryValue");
-        }
-        $param.put(RuleJsonKey.IMPORTS, imports);
-        JSONArray globals = new JSONArray();
-        Set<String> baseKpi = null;
-        if (isMixKpi) {
-            baseKpi = new HashSet<>();
-            //组合指标添加DateCD
-            JSONObject global = new JSONObject();
-            global.put(RuleJsonKey.GLOBAL_TYPE, RuleJsonKey.DateCd.TYPE);
-            global.put(RuleJsonKey.GLOBAL_INSTANCE, RuleJsonKey.DateCd.INSTANCE);
-            globals.add(global);
-        }
-        $param.put(RuleJsonKey.GLOBALS, globals);
-
-        JSONArray ruleArr = object.getJSONArray(RuleJsonKey.RULE_ARR);
-        ruleKpiDefine.setScriptData(ruleArr.toJSONString());
-        ruleArr = dealRuleArr(ruleArr, prepared.getJSONObject(RuleJsonKey.COL_JOIN_PARAM), dataModelId, isMixKpi, baseKpi);
-        $param.put(RuleJsonKey.RULES_GROUP, ruleArr);
-        ruleKpiDefine.setScriptRule(drlParser.parse($param));
-        return baseKpi;
-    }
-
-    //获取表字段配置
-    private JSONObject prepareDeclare(JSONArray tableDefineIds) {
-        Long[] a = new Long[tableDefineIds.size()];
-        for (int i = 0; i < tableDefineIds.size(); i++) {
-            a[i] = tableDefineIds.getLong(i);
-        }
-        List<RuleTableDefine> tableDefineList = tblService.findByPkIds(a);
-        JSONObject $pp = new JSONObject();
-        JSONArray tables = new JSONArray();
-        JSONObject joinColumn = new JSONObject();
-        for (RuleTableDefine define : tableDefineList) {
-            JSONObject t = JSON.parseObject(define.getFields());
-            t.put(RuleJsonKey.FACT_NAME, EngineUtil.getTypeName(define.getTableDefineRowId()));
-            if (Type.DATA_MODEL == define.getType()) {
-                $pp.put(RuleJsonKey.DATA_MODEL_ID, define.getTableDefineRowId());
-                JSONObject join = JSON.parseObject(define.getRelField());
-                if (null != join) {
-                    for (String k : join.keySet()) {
-                        JSONObject $$jo = join.getJSONObject(k);
-                        String fact = $$jo.getString(RuleJsonKey.ID_KEY);
-                        if (!joinColumn.containsKey(fact)) {
-                            joinColumn.put(fact, new JSONArray());
-                        }
-                        JSONObject $$jp = new JSONObject();
-                        $$jp.put(RuleJsonKey.ID_KEY, define.getTableDefineRowId());
-                        $$jp.put(RuleJsonKey.RULE_FIELD, $$jo.getString(RuleJsonKey.COL_T));
-                        $$jp.put(RuleJsonKey.RULE_OP, "==");
-                        $$jp.put(RuleJsonKey.RULE_VALUE, k);
-                        joinColumn.getJSONArray(fact).add($$jp);
-                    }
-                }
-            }
-            tables.add(t);
-        }
-        $pp.put(RuleJsonKey.DECLARE, tables);
-        $pp.put(RuleJsonKey.COL_JOIN_PARAM, joinColumn);
-        return $pp;
-    }
-
-    //处理规则When部分
-    //添加默认条件或默认关联
-    private JSONArray dealRuleArr(JSONArray ruleArr, JSONObject joinColumn, String dataModelId, boolean isMixKpi, Set<String> baseKpi) {
-        Set<String> tableUsed = new HashSet<>();
-        for (int i = 0; i < ruleArr.size(); i++) {
-            JSONObject ruleItem = ruleArr.getJSONObject(i);
-            JSONArray whens = ruleItem.getJSONArray(RuleJsonKey.RULE_WHEN);
-            ruleItem.put(RuleJsonKey.RULE_THEN, dealRuleThenPart(ruleItem, dataModelId, isMixKpi, baseKpi));
-            //处理前台配置的条件选项
-            for (int j = 0; j < whens.size(); j++) {
-                String id = whens.getJSONObject(j).getString(RuleJsonKey.ID_KEY);
-                if (joinColumn.containsKey(id)) {
-                    JSONArray $$rules = whens.getJSONObject(j).getJSONArray(RuleJsonKey.RULE_OPS);
-                    $$rules.addAll(joinColumn.getJSONArray(id));
-                }
-                tableUsed.add(id);
-            }
-            //处理关联信息
-            for (String k : joinColumn.keySet()) {
-                if (!tableUsed.contains(k)) {
-                    JSONObject $$p = new JSONObject();
-                    $$p.put(RuleJsonKey.ID_KEY, k);
-                    $$p.put(RuleJsonKey.RULE_OPS, joinColumn.get(k));
-                    whens.add($$p);
-                    tableUsed.add(k);
-                    JSONArray joinTable = joinColumn.getJSONArray(k);
-                    for (int t = 0; t < joinTable.size(); t++) {
-                        JSONObject _ta = joinTable.getJSONObject(t);
-                        String _key = _ta.getString(RuleJsonKey.ID_KEY);
-                        if (!tableUsed.contains(_key)) {
-                            $$p = new JSONObject();
-                            $$p.put(RuleJsonKey.ID_KEY, _key);
-                            $$p.put(RuleJsonKey.RULE_OPS, new JSONArray());
-                            whens.add($$p);
-                            tableUsed.add(_key);
-                        }
-                    }
-                }
-            }
-            //确认数据模型是否使用
-            if(!tableUsed.contains(dataModelId)){
-                JSONObject $$p = new JSONObject();
-                $$p.put(RuleJsonKey.ID_KEY, dataModelId);
-                $$p.put(RuleJsonKey.RULE_OPS, new JSONArray());
-                whens.add($$p);
-            }
-            tableUsed.clear();
-        }
-        return ruleArr;
-    }
-
-    private JSONArray dealRuleThenPart(JSONObject ruleItem, String dataModelId, boolean isMixKpi, Set<String> baseKpi) {
-
-        JSONArray jsonArray = new JSONArray();
-        String dataFact = EngineUtil.getFactArgumentName(dataModelId);
-
-        String ruleThen = ruleItem.getString(RuleJsonKey.RULE_THEN);
-
-        if (StringUtils.isBlank(ruleItem.getString(RuleJsonKey.RULE_NAME))) {
-            ruleItem.put(RuleJsonKey.RULE_NAME, "Rule" + UUID.randomUUID().toString().replaceAll("-", ""));
-        }
-
-        if (isMixKpi) {
-            RuleTableDefine tblDefine = tblService.get(Long.parseLong(dataModelId));
-            Pattern pattern = Pattern.compile("\\[(.+?)\\]");
-            Matcher matcher = pattern.matcher(ruleThen);
-            while (matcher.find()) {
-                baseKpi.add(matcher.group(1));
-            }
-            ruleThen = ruleThen.replaceAll("\\[(.+?)\\]", "SummaryValue(\"$1\"," + RuleJsonKey.DateCd.INSTANCE + ",\\" + dataFact + "." + tblDefine.getDimField() + ")");
-        }
-
-        //数据计算部分
-        jsonArray.add(dataFact + "." + RuleConstants.RuleColumn.Value.RULE_VALUE + "=" + ruleThen);
-        //文字表达式部分
-        StringBuilder r_expr = new StringBuilder();
-        r_expr.append(dataFact).append(".").append(RuleConstants.RuleColumn.Value.RULE_EXPR).append("=");
-        r_expr.append("\"").append(ruleItem.getString(RuleJsonKey.RULE_THEN_STR)).append("\"");
-        jsonArray.add(r_expr.toString());
-        //从WorkMemory 移除该Fact
-        jsonArray.add("retract(" + dataFact + ")");
-        return jsonArray;
     }
 
     @RequestMapping("{kpiCode}/check/")
@@ -310,18 +174,18 @@ public class RuleKpiDefineController extends BaseController<RuleKpiDefineService
     public ResponseVO delete(@PathVariable String pk) {
         if (StringUtils.isNumeric(pk)) {
             Long ruleId = Long.parseLong(pk);
-            List<Long> beUsed = ruleRelationService.queryIdByTargetIdRelType(ruleId,new String[]{Type.MIX_BASE_KPI_REL});
-            if(beUsed.isEmpty()) {
+            List<Long> beUsed = ruleRelationService.queryIdByTargetIdRelType(ruleId, new String[]{Type.MIX_BASE_KPI_REL, Type.MIX_BASE_KPI_REL_2});
+            if (beUsed.isEmpty()) {
                 RuleKpiDefine kpiDefine = service.get(ruleId);
                 if (kpiDefine.getType() == Type.MIX_KPI) {
-                    ruleRelationService.deleteAllByFromId(ruleId, new String[]{Type.MIX_BASE_KPI_REL});
+                    ruleRelationService.deleteAllByFromId(ruleId, new String[]{Type.MIX_BASE_KPI_REL, Type.MIX_BASE_KPI_REL_2});
                     ruleRelationService.deleteAllByTargetId(ruleId, new String[]{Type.RULE_GROUP_MIX_RULE_KPI});
-                }else{
+                } else {
                     ruleRelationService.deleteAllByTargetId(ruleId, new String[]{Type.RULE_GROUP_BASE_RULE_KPI});
                 }
                 service.delete(kpiDefine);
                 return ControllerHelper.success("规则定义成功删除");
-            }else{
+            } else {
                 return ControllerHelper.badRequest("有规则依赖该指标,不能删除");
             }
         }

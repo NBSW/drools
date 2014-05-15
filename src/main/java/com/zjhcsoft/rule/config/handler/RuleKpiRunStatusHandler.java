@@ -5,7 +5,7 @@ import com.zjhcsoft.rule.config.entity.RuleGroupTask;
 import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
 import com.zjhcsoft.rule.engine.util.ResultMessage;
 import com.zjhcsoft.rule.log.util.LogUtil;
-import com.zjhcsoft.rule.result.handler.ResultSummaryHandler;
+import com.zjhcsoft.rule.result.service.RuleKpiResultSummaryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -78,8 +78,14 @@ public class RuleKpiRunStatusHandler {
     public Future<List<Long>> executeBase(List<Future<ResultMessage>> futureList, RuleGroupTask task, RuleKpiDefine kpi, Long logRowId) {
         execute(futureList, task, kpi, logRowId);
         //todo  checkBefore summary 汇总前做什么确认
+
+        //判断指标是否需要做汇总操作
+        if(kpi.isSummary()) {
+            summaryService.summaryDbSide(kpi.getKpiCode(), task.getDateCd());
+        }
+
         //异步方法
-        return resultSummaryHandler.execute(task, kpi);
+        return ruleMixKpiHandler.fetchMixKpi(task, kpi);
     }
 
     /**
@@ -99,9 +105,8 @@ public class RuleKpiRunStatusHandler {
         return ruleMixKpiHandler.fetchMixKpi(task, kpi);
     }
 
-
     @Inject
-    private ResultSummaryHandler resultSummaryHandler;
+    private RuleKpiResultSummaryService summaryService;
 
     protected class Result {
         boolean success;

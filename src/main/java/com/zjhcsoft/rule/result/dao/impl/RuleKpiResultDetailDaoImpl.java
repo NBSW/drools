@@ -117,7 +117,7 @@ public class RuleKpiResultDetailDaoImpl implements RuleKpiResultDetailDao {
             result.setLatnId(rs.getString("LATN_ID"));
             result.setKpiName(rs.getString("KPI_NAME"));
             result.setKpiCode(rs.getString("KPI_CODE"));
-            result.setKpiValue(rs.getDouble("KPI_VALUE"));
+            result.setKpiValue(rs.getFloat("KPI_VALUE"));
             result.setClassCode(rs.getString("CLASS_CODE"));
             result.setCommId(rs.getString("COMM_ID"));
             result.setDateCd(rs.getString("DATE_CD"));

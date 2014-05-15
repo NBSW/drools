@@ -90,16 +90,21 @@ class RuleKnowledgeStore {
     }
 
 
-    public KnowledgeBase updateKnowledgeBase(String scriptRule) throws Exception{
-        return getKnowledgeBase(scriptRule);
+    public void updateKnowledgeBase(String new_script, String old_script) throws Exception {
+        String $shaHex_new = DigestUtils.sha1Hex(new_script.getBytes());
+        String $shaHex_old = DigestUtils.sha1Hex(old_script.getBytes());
+        if (!$shaHex_new.equals($shaHex_old)) {
+            knowledgeBaseMap.remove($shaHex_old);
+            getKnowledgeBase(new_script);
+        }
     }
 
 
-    public KnowledgeBase queryKnowledgeBase(String scriptRule) throws Exception{
+    public KnowledgeBase queryKnowledgeBase(String scriptRule) throws Exception {
         return getKnowledgeBase(scriptRule);
     }
 
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(String scriptRule) throws Exception{
+    public StatefulKnowledgeSession newStatefulKnowledgeSession(String scriptRule) throws Exception {
         return getKnowledgeBase(scriptRule).newStatefulKnowledgeSession();
     }
 

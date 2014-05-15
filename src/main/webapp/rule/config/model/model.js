@@ -41,6 +41,12 @@ var $model_list = {
             };
             if (callback)
                 cal = callback;
+            $.each(oColumns,function(i,col){
+                if(col.type.toLowerCase()=="number"){
+                    col.type = "Number";
+                    col.number = true;
+                }
+            });
             _ajaxGet("config/table/" + rowId, function (table) {
                 if (table.fields) {
                     var fields = JSON.parse(table.fields);
@@ -63,6 +69,12 @@ var $model_list = {
     },
     saveModel: function (table, successFun) {
         if (typeof table.fields == "object") {
+            $.each(table.fields.columns,function(i,col){
+                if(col.type.toLowerCase()=="number"){
+                    col.type = "Number";
+                    col.number = true;
+                }
+            });
             table.fields = JSON.stringify(table.fields);
         }
         var _that = this;

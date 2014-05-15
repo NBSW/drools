@@ -52,7 +52,8 @@ public class RuleKpiResultSummaryDaoImpl implements RuleKpiResultSummaryDao {
 
     @Override
     public RuleKpiResultSummary fetchSummary(String kpiCode, String dateCd, String dimId) {
-        return jdbcTemplate.queryForObject(sqlMap.get("fetchSql"), new Object[]{dimId, kpiCode, dateCd}, new RuleKpiResultRowMapper());
+        List<RuleKpiResultSummary> summaryList = jdbcTemplate.query(sqlMap.get("fetchSql"), new Object[]{dimId, kpiCode, dateCd}, new RuleKpiResultRowMapper());
+        return summaryList.size() > 0 ? summaryList.get(0) : null;
     }
 
     @Override

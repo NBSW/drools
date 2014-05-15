@@ -58,10 +58,10 @@ $(function () {
 
     var get_dim_define = function (e) {
         var $Dim_mea = [
-            {id: "mea", text: "度量"}
+            {id: "dim", text: "维度"}
         ];
-        if (e.record.type != 'Number') {
-            $Dim_mea.unshift({id: "dim", text: "维度"});
+        if (e.record.type == 'Number') {
+            $Dim_mea.unshift({id: "mea", text: "度量"});
         }
         $Dim_mea.unshift({id: "other", text: "模型字段"});
         $Dim_mea.unshift({id: "", text: "其他"});
@@ -89,7 +89,7 @@ $(function () {
                 display: '数据类型', name: 'type', minWidth: 60, width: 100,
                 editor: {type: 'select', cancelable: false, data: $Field_type, onChanged: change_dim_mea},
                 render: function (row) {
-                    if (row.type && "NUMBER" == row.type.toUpperCase()) {
+                    if (row.type && "number" == row.type.toLowerCase()) {
                         return "数字";
                     }
                     if ("String" == row.type) {

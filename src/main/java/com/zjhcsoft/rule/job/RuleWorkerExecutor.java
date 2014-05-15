@@ -10,6 +10,7 @@ import org.gearman.GearmanFunctionCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ public class RuleWorkerExecutor implements GearmanFunction {
     }
 
     //业务逻辑
+    @Async
     private void executeBis(Long taskId) {
         RuleGroupTask newTask = service.get(taskId);
         if (null != newTask) {

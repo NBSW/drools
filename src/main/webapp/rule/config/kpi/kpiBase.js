@@ -93,6 +93,7 @@ var $$BasicRule = function () {
             ruleNameCodeMap[d.kpiName] = d.kpiCode;
             ruleCodeNameMap[d.kpiCode] = d.kpiName;
         });
+        $Kpi_Rel_KPI.setData(data,G_T_PARAM.ruleDefine)
     };
     return{
         update: function (data) {
@@ -274,7 +275,6 @@ $(function () {
                 if ($$tableLigerComboBox_is_ready) {
                     clearInterval(setIntervalId);
                     $$Edit_Kpi.renderHtml(G_T_PARAM.ruleDefine);
-                    7
                 }
             }, 500);
         })
@@ -306,11 +306,11 @@ $(function () {
 
 
     $$ruleConfigContainer = $('#main_rule_group');
-    $('#zh').bind('click', function (event) {
+    $('#zh').bind('click', function () {
         if ($ruleContainer.kpiTypeCanChange()) {
             zh = this.checked;
             ruleInputCon();
-        } else {
+        }else{
             event.preventDefault();
         }
     });
@@ -339,4 +339,6 @@ $(function () {
         offsetX: 10,
         offsetY: 5
     });
+
+    $('#summary').click();
 });

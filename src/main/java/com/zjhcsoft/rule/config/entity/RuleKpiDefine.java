@@ -58,6 +58,12 @@ public class RuleKpiDefine extends Schema implements Serializable {
     @JoinColumn(name = "table_define_ROW_ID")
     private RuleTableDefine ruleTableDefine;
 
+    @Transient
+    private String relKPIs;
+
+    @Column
+    private boolean summary;
+
     public Long getRuleKpiDefineRowId() {
         return ruleKpiDefineRowId;
     }
@@ -200,5 +206,21 @@ public class RuleKpiDefine extends Schema implements Serializable {
 
     public void setOtherParam(String otherParam) {
         this.otherParam = otherParam;
+    }
+
+    public String getRelKPIs() {
+        return relKPIs;
+    }
+
+    public void setRelKPIs(String relKpis) {
+        this.relKPIs = relKpis;
+    }
+
+    public boolean isSummary() {
+        return summary;
+    }
+
+    public void setSummary(boolean summary) {
+        this.summary = summary;
     }
 }

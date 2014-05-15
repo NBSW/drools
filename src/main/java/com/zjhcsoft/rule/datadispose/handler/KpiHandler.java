@@ -6,7 +6,9 @@ import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
 import com.zjhcsoft.rule.config.entity.RuleTableDefine;
 import com.zjhcsoft.rule.config.handler.RuleGroupTaskResultHandler;
 import com.zjhcsoft.rule.config.handler.RuleKpiRunStatusHandler;
+import com.zjhcsoft.rule.config.util.DroolsScriptUtil;
 import com.zjhcsoft.rule.datadispose.component.JDBCTemplateStore;
+import com.zjhcsoft.rule.datadispose.service.KpiRunLock;
 import com.zjhcsoft.rule.datadispose.service.RuleBaseServiceImpl;
 import com.zjhcsoft.rule.datadispose.util.FactRowMapper;
 import com.zjhcsoft.rule.datadispose.util.JDBCFetchUtil;
@@ -28,6 +30,8 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +48,9 @@ public class KpiHandler {
 
     @Inject
     private RuleKpiResultDetailService detailService;
+
+    @Inject
+    private DroolsScriptUtil scriptUtil;
 
     public void executeBaseKpi(RuleBaseServiceImpl ruleService, List<RuleKpiDefine> baseKpiDefineList) {
 
@@ -67,32 +74,12 @@ public class KpiHandler {
         List<RuleEngineEvent> engineEvents = new ArrayList<>();
         engineEvents.add(new RuleResultDetailEventListener(kpi, tableDefine, ruleService.getFactType(kpi, tableDefine), task));
 
-        Result result = extractData(ruleService, task, fetchUtil, kpi, tableDefine, paramTableList, engineEvents);
+        Result result = extractData(ruleService, task, fetchUtil, kpi, paramTableList, engineEvents, null);
         fetchUtil.destroy();
         if (null != result) {
             //异步方法
             Future<List<Long>> mixResult = ruleKpiRunStatusHandler.executeBase(result.futureList, task, kpi, result.logRowId);
-            waitKpiDone(mixResult, ruleService);
-        }
-    }
-
-
-    @Async("groupTaskExecutor")
-    private void waitKpiDone(Future<List<Long>> mixResult, RuleBaseServiceImpl service) {
-        while (!mixResult.isDone()) {
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        try {
-            List<Long> kpiId = mixResult.get();
-            if (null != kpiId) {
-                service.runMixKpi(kpiId);
-            }
-        } catch (InterruptedException|ExecutionException e) {
-            e.printStackTrace();
+            waitKpiDone(mixResult, ruleService, kpi.getKpiCode(), task.getDateCd());
         }
     }
 
@@ -114,21 +101,54 @@ public class KpiHandler {
         List<RuleEngineEvent> engineEvents = new ArrayList<>();
         engineEvents.add(new RuleResultSummaryEventListener(kpi, tableDefine, service.getFactType(kpi, tableDefine), task));
 
-        Result result = extractData(service, task, fetchUtil, kpi, tableDefine, paramTableList, engineEvents);
+        Map<String, Object> globalMap = new HashMap<>();
+        globalMap.put(RuleConstants.RuleJsonKey.DateCd.INSTANCE, task.getDateCd());
+        Result result = extractData(service, task, fetchUtil, kpi, paramTableList, engineEvents, globalMap);
         fetchUtil.destroy();
         if (null != result) {
             //异步方法
             Future<List<Long>> mixResult = ruleKpiRunStatusHandler.executeMix(result.futureList, task, kpi, result.logRowId);
-            waitKpiDone(mixResult, service);
+            waitKpiDone(mixResult, service, kpi.getKpiCode(), task.getDateCd());
         }
     }
 
-    private Result extractData(RuleBaseServiceImpl ruleService, RuleGroupTask task, JDBCFetchUtil fetchUtil, RuleKpiDefine kpi, RuleTableDefine tableDefine, List<RuleTableDefine> paramTableList, List<RuleEngineEvent> engineEvents) {
+    @Async("groupTaskExecutor")
+    private void waitKpiDone(Future<List<Long>> mixResult, RuleBaseServiceImpl service, String kpiCode, String dateCd) {
+        while (!mixResult.isDone()) {
+            try {
+                TimeUnit.SECONDS.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //释放运行锁
+        KpiRunLock.releaseLock(kpiCode, dateCd);
+
+        try {
+            List<Long> kpiId = mixResult.get();
+            if (null != kpiId) {
+                service.runMixKpi(kpiId);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Result extractData(RuleBaseServiceImpl ruleService, RuleGroupTask task, JDBCFetchUtil fetchUtil, RuleKpiDefine kpi, List<RuleTableDefine> paramTableList, List<RuleEngineEvent> engineEvents, Map<String, Object> globalMap) {
         //todo  参数是否Check?
         int index = 1;
         int total = 0;
         Long logRowId = LogUtil.createLog(kpi, task);
-        String ruleScript = kpi.getScriptRule();
+
+        String ruleScript;
+        try {
+            scriptUtil.generateRuleScript(kpi, true);
+        } catch (Exception e) {
+            logger.error("规则文件生成发生异常{}", e.toString());
+        } finally {
+            ruleScript = kpi.getScriptRule();
+        }
 
         for (RuleEngineEvent event : engineEvents) {
             event.setLogId(logRowId);
@@ -138,17 +158,21 @@ public class KpiHandler {
         List paramList = ruleService.fetchParam(paramTableList, kpi, ruleService.getParaFetchParam());
         logger.debug("参数条数：{}", paramList.size());
 
-        FactType factType = ruleService.getFactType(kpi, tableDefine);
+        FactType factType = ruleService.getFactType(kpi, kpi.getRuleTableDefine());
 
         RowMapper rowMapper = FactRowMapper.create(factType);
 
-        fetchUtil.setConnection(JDBCTemplateStore.getJDBCTemplate(tableDefine.getDsCode()));
+        fetchUtil.setConnection(JDBCTemplateStore.getJDBCTemplate(kpi.getRuleTableDefine().getDsCode()));
+        String fetchSql = null;
         try {
-            fetchUtil.createCursor(ruleService.getFetchSql(tableDefine, factType,kpi), ruleService.getDataFetchParam());
+            fetchSql = ruleService.getFetchSql(kpi.getRuleTableDefine(), factType, kpi);
+            fetchUtil.createCursor(fetchSql, ruleService.getDataFetchParam());
         } catch (Exception e) {
             //todo 处理异常
             LogUtil.changeStatus(logRowId, RuleConstants.Status.EXCEPTION, "数据模型数据获取游标" + e.toString(), true);
             return null;
+        } finally {
+            logger.debug("数据获取\nSQL:{}\nKPI:{}-{}", fetchSql, kpi.getKpiCode(), kpi.getKpiName());
         }
 
         List<Future<ResultMessage>> futureList = new ArrayList<>();
@@ -159,7 +183,7 @@ public class KpiHandler {
                 if (null == dataList || dataList.isEmpty()) {
                     break;
                 }
-                Future<ResultMessage> future = EngineUtil.exec(ruleScript, engineEvents, dataList, paramList, index, null);
+                Future<ResultMessage> future = EngineUtil.exec(ruleScript, engineEvents, dataList, paramList, index, globalMap);
                 total += dataList.size();
                 logger.debug("活动{} KPI {} 账期 {} 数据条数：{}/{} 已提交处理{}", task.getTaskName(), kpi.getKpiCode(), task.getDateCd(), dataList.size(), index++, total);
                 futureList.add(future);

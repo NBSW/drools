@@ -2,24 +2,18 @@ package com.zjhcsoft.rule.result.event;
 
 import com.zjhcsoft.rule.common.RuleConstants;
 import com.zjhcsoft.rule.common.util.DimFieldProcessor;
+import com.zjhcsoft.rule.common.util.NaNNumberUtil;
 import com.zjhcsoft.rule.config.entity.RuleGroupTask;
 import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
 import com.zjhcsoft.rule.config.entity.RuleTableDefine;
-import com.zjhcsoft.rule.engine.component.RuleEngineEvent;
 import com.zjhcsoft.rule.result.entity.RuleKpiResultDetail;
 import com.zjhcsoft.rule.result.service.RuleKpiResultDetailService;
-import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kie.api.definition.type.FactType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +22,7 @@ import java.util.Map;
  */
 @Component
 @Lazy(false)
-public class RuleResultDetailEventListener extends RuleResultBaseEventListener<RuleKpiResultDetail,RuleKpiResultDetailService>{
+public class RuleResultDetailEventListener extends RuleResultBaseEventListener<RuleKpiResultDetail, RuleKpiResultDetailService> {
 
     public RuleResultDetailEventListener() {
     }
@@ -38,12 +32,21 @@ public class RuleResultDetailEventListener extends RuleResultBaseEventListener<R
     }
 
     @Override
-    protected RuleKpiResultDetail extractItem(Map<String, Object> mapResult,RuleTableDefine dataTableDefine,RuleGroupTask ruleGroupTask,RuleKpiDefine ruleKpiDefine) {
+    protected RuleKpiResultDetail extractItem(Map<String, Object> mapResult, RuleTableDefine dataTableDefine, RuleGroupTask ruleGroupTask, RuleKpiDefine ruleKpiDefine) {
+        String dimValue = DimFieldProcessor.exec(mapResult.get(dataTableDefine.getDimField()));
+        if (StringUtils.isBlank(dimValue)) {
+            return null;
+        }
         RuleKpiResultDetail ruleKpiResult = new RuleKpiResultDetail();
         //todo 设置结果值
         ruleKpiResult.setExpr((String) mapResult.get(RuleConstants.RuleColumn.Value.RULE_EXPR));
-        ruleKpiResult.setKpiValue(new BigDecimal((float) mapResult.get(RuleConstants.RuleColumn.Value.RULE_VALUE)).doubleValue());
-        ruleKpiResult.setDimId(DimFieldProcessor.exec(mapResult.get(dataTableDefine.getDimField())));
+        float kpiValue = (float) mapResult.get(RuleConstants.RuleColumn.Value.RULE_VALUE);
+        if (!NaNNumberUtil.isNaN(kpiValue)) {
+            ruleKpiResult.setKpiValue(kpiValue);
+        } else {
+            ruleKpiResult.setKpiValue(0);
+        }
+        ruleKpiResult.setDimId(dimValue);
         ruleKpiResult.setDateCd(ruleGroupTask.getDateCd());
         ruleKpiResult.setLatnId(dataTableDefine.getLatnId());
         ruleKpiResult.setKpiCode(ruleKpiDefine.getKpiCode());

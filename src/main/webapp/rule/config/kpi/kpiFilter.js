@@ -99,7 +99,7 @@ Rule = function (cid, data, delFun, first, dataObj) {
             type = 'string';
             $.each(data, function (i, item) {
                 if (item.id == index) {
-                    if (item.type == 'number') {
+                    if (item.type && item.type.toLowerCase() == 'number') {
                         type = 'number';
                     }
                     return false;
@@ -136,7 +136,7 @@ Rule = function (cid, data, delFun, first, dataObj) {
             inProcess(this);
         });
 
-        valueField.bind('numberTrigger input propertychange', function () {
+        valueField.bind('numberTrigger input propertychange editTrigger', function () {
             value = this.value;
             var op = liger.get('op_' + id).getValue();
             if (op == 'in' || op == 'not in') {
@@ -151,7 +151,7 @@ Rule = function (cid, data, delFun, first, dataObj) {
 
         }).val('number' == type ? 0 : '');
 
-        if (data.length > 0) {
+        if (data && data.length > 0) {
             liger.get("field_" + id).selectValue(data[0].id);
         }
         if (!first)
@@ -215,16 +215,17 @@ Rule = function (cid, data, delFun, first, dataObj) {
         j['op'] = liger.get('op_' + id).getValue();
         j['type'] = type;
         if (j['op'] == 'in' || j['op'] == 'not in') {
-           /* var ton = type == "string" ? "\"" : "";
-            var _val = [];
-            $.each(value.split(/\||,/g), function (i, v) {
-                _val.push(ton + v + ton);
-            });
-            j['value'] = "(" + _val.join(',') + ")";*/
+            /* var ton = type == "string" ? "\"" : "";
+             var _val = [];
+             $.each(value.split(/\||,/g), function (i, v) {
+             _val.push(ton + v + ton);
+             });
+             j['value'] = "(" + _val.join(',') + ")";*/
             j['type'] = "original";
-        }/* else {
+        }
+        /* else {
 
-        }*/
+         }*/
         j['value'] = value;
         j['oName'] = dealOName($$f, $$RuleFilter.tableId(cid));
         return j;
@@ -250,9 +251,10 @@ Rule = function (cid, data, delFun, first, dataObj) {
         if (rule_op.op == 'in' || rule_op.op == 'not in') {
             _val = _val.replace(/\(|\)|"/g, '');
             valueField.val(_val);
-            valueField.trigger('inTrigger')
-        }else{
+            valueField.trigger('inTrigger');
+        } else {
             valueField.val(_val);
+            valueField.trigger('editTrigger');
         }
 
     };

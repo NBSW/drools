@@ -6,6 +6,8 @@ import com.zjhcsoft.rule.config.repository.RuleGroupTaskRepository;
 import com.zjhcsoft.rule.config.service.RuleGroupTaskService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.List;
  */
 @Service
 public class RuleGroupTaskServiceImpl extends BaseServiceImpl<RuleGroupTask, RuleGroupTaskRepository> implements RuleGroupTaskService {
+
+    private static Logger logger = LoggerFactory.getLogger(RuleGroupTaskServiceImpl.class);
 
     private static final Sort taskSort = new Sort("dateCd", "ruleGroupRowId");
 
@@ -50,7 +54,9 @@ public class RuleGroupTaskServiceImpl extends BaseServiceImpl<RuleGroupTask, Rul
 
     @Override
     public boolean isExist(Long groupRowId, String dateCd) {
-        return repository.findByRuleGroupRowIdAndDateCd(groupRowId, dateCd).size() > 0;
+        int existCount = repository.findByRuleGroupRowIdAndDateCd(groupRowId, dateCd).size();
+        logger.debug("主题任务重复检测 存在{}",existCount);
+        return existCount > 0;
     }
 
     @Override

@@ -29,7 +29,7 @@ var $column = {
     },
     getData: function () {
          var data = {
-             name: $.trim($('#column_code').val()),
+             name: $.trim($('#column_code').val().toUpperCase()),
              label: $.trim($('#column_name').val()),
              type:$('#column_type').val(),
              dimension:$('input[name=dm][type=radio]:checked').val(),
@@ -59,7 +59,7 @@ var $column = {
     separateColumns: function (columns) {
         var col_sep = {date: [], ot: []};
         $.each(columns, function (i, c) {
-            if (c.type && c.type.toUpperCase() != "NUMBER") {
+            if (c.type && c.type.toLowerCase() != "number") {
                 col_sep.date.push(c);
             } else {
                 col_sep.ot.push(c);

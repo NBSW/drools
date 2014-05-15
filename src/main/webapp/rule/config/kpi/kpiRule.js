@@ -63,7 +63,7 @@ var $ruleContainer = {
         var ali = $("ul.rule_list").find('li[edit!=false]');
         ruleConHide(ali);
         li.find('>input.l-button').show();
-        li.attr('edit',true);
+        li.attr('edit', true);
         li.find('>span>input:not(.rule_del_group)').removeAttr('disabled').removeClass('not_edit_input');
         li.find('>div>input').show();
         li.find('>div>span').html('');
@@ -74,10 +74,10 @@ var $ruleContainer = {
     },
     saveRule: function (e) {
         var li;
-        if(typeof e =='object') {
+        if (typeof e == 'object') {
             li = $(e).closest('li');
-        }else{
-            li = $('ul.rule_list>li[li_rid='+e+']');
+        } else {
+            li = $('ul.rule_list>li[li_rid=' + e + ']');
         }
         if ($$RuleFilter) {
             //条件框隐藏条件
@@ -87,8 +87,8 @@ var $ruleContainer = {
         $('#rule1').show();
         //todo save Rule Html
     },
-    renderHtml:function(rid,ruleData){
-        var li = $('ul.rule_list>li[li_rid='+rid+']');
+    renderHtml: function (rid, ruleData) {
+        var li = $('ul.rule_list>li[li_rid=' + rid + ']');
         li.find('>span>input:eq(0)').val(ruleData.ruleName);
         $$RuleFilter.ruleName(ruleData.ruleName);
         li.find('>div>input').val(ruleData.thens_str);
@@ -160,6 +160,11 @@ function ruleInputCon() {
         $when.click(this, false);
     });
     input_con.attr('init', 'true');
+    if (zh) {
+        $Kpi_Rel_KPI.show();
+    } else {
+        $Kpi_Rel_KPI.hide();
+    }
 }
 
 var $when = {
@@ -209,7 +214,7 @@ var $when = {
                     }
                 } else {
                     if (zh && $$BasicRule.getKpiCode(_s)) {
-                        fStr += ("[" + $$BasicRule.getKpiCode(_s)+"]");
+                        fStr += ("[" + $$BasicRule.getKpiCode(_s) + "]");
                     } else {
                         fStr = appendStr(fStr, _s);
                     }
@@ -229,7 +234,7 @@ function appendStr(o, a) {
     return o;
 }
 
-$(function(){
+$(function () {
     $$ruleConfigContainerButton.addGroupButton = $$ruleConfigContainer.find("input.role-group-add").unbind().bind('click', function () {
         var g = _addGroup(1, $$RuleFilter.data().length == 0, $$ruleConfigContainer, $$RuleFilter, $$RuleFilter.getCid());
         $$RuleFilter.pushData(g);

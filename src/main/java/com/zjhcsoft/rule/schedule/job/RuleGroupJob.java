@@ -6,8 +6,10 @@ import com.zjhcsoft.rule.config.entity.RuleGroup;
 import com.zjhcsoft.rule.config.entity.RuleGroupTask;
 import com.zjhcsoft.rule.config.service.RuleGroupService;
 import com.zjhcsoft.rule.config.service.RuleGroupTaskService;
+import com.zjhcsoft.rule.config.util.RuleTaskCreator;
 import com.zjhcsoft.rule.job.RuleClient;
 import com.zjhcsoft.rule.job.RuleClientImpl;
+import com.zjhcsoft.rule.schedule.TaskSchedule;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,16 +38,10 @@ public class RuleGroupJob implements Job {
 
     public static final String DATA_KEY = "RuleGroup";
 
-    private static RuleGroupTaskService service;
 
     private static RuleGroupService groupService;
 
-    private static RuleClient ruleClient;
-
-    @Inject
-    public void setService(RuleGroupTaskService service) {
-        RuleGroupJob.service = service;
-    }
+    private static RuleTaskCreator taskCreator;
 
     @Inject
     public void setGroupService(RuleGroupService groupService) {
@@ -53,57 +49,8 @@ public class RuleGroupJob implements Job {
     }
 
     @Inject
-    public void setRuleClient(RuleClient ruleClient) {
-        RuleGroupJob.ruleClient = ruleClient;
-    }
-
-    protected static enum CYCLE {
-        DAY_WEEK(new SimpleDateFormat("yyyyMMdd"), Calendar.DATE), MON(new SimpleDateFormat("yyyyMM"), Calendar.MONTH);
-
-        CYCLE(DateFormat df, int calField) {
-            this.df = df;
-            this.calField = calField;
-        }
-
-        private DateFormat df;
-
-        private int calField;
-
-        public String getDate(String preDate) {
-            Calendar calendar = Calendar.getInstance();
-            if (StringUtils.isNotBlank(preDate)) {
-                try {
-                    Date pd = df.parse(preDate);
-                    calendar.setTime(pd);
-                    calendar.add(calField, 1);
-                } catch (ParseException e) {
-                    calendar.add(calField, -1);
-                }
-            } else {
-                calendar.add(calField, -1);
-            }
-            try {
-                if (!calendar.getTime().before(df.parse(format(new Date())))) {
-                    return null;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return df.format(calendar.getTime());
-        }
-
-        public String format(Date date) {
-            return df.format(date);
-        }
-
-        public static CYCLE get(int cycle) {
-            if (RuleConstants.Cycle.WEEK == cycle || RuleConstants.Cycle.DAY == cycle) {
-                return DAY_WEEK;
-            } else if (RuleConstants.Cycle.MONTH == cycle) {
-                return MON;
-            }
-            return null;
-        }
+    public void setTaskCreator(RuleTaskCreator taskCreator) {
+        RuleGroupJob.taskCreator = taskCreator;
     }
 
     @Override
@@ -112,27 +59,10 @@ public class RuleGroupJob implements Job {
         Long ruleGroupRowId = (Long) context.getJobDetail().getJobDataMap().get(DATA_KEY);
         RuleGroup ruleGroup = groupService.get(ruleGroupRowId);
         if (null == ruleGroup || RuleConstants.Status.NORMAL != ruleGroup.getStatus()) {
+            //非正常状态的任务 停止调度
+            TaskSchedule.deleteJob(this.getClass(),ruleGroupRowId);
             return;
         }
-        RuleGroupTask ruleGroupTask = service.queryLastTaskByGroupId(ruleGroupRowId);
-        String preDate = null;
-        CYCLE cycle = CYCLE.get(ruleGroup.getCycle());
-        if (null != ruleGroupTask) {
-            preDate = ruleGroupTask.getDateCd();
-        }
-        String dateToCreate = cycle.getDate(preDate);
-        if (null == dateToCreate) {
-            return;
-        } else if (!service.isExist(ruleGroupRowId, dateToCreate)) {//防止重复调度
-            //创建新任务
-            RuleGroupTask newTask = new RuleGroupTask();
-            newTask.setRuleGroup(ruleGroup);
-            newTask.setDateCd(dateToCreate);
-            newTask.setStatus(RuleConstants.Status.READY);
-            newTask = service.create(newTask);
-
-            //发布任务
-            ruleClient.sendNewTask(newTask);
-        }
+        taskCreator.create(ruleGroup);
     }
 }

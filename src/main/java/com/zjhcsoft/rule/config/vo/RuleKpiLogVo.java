@@ -19,6 +19,7 @@ public class RuleKpiLogVo {
     private Date startTime;
     private Date endTime;
     private String message;
+    private boolean summary;
 
     private Integer status;
 
@@ -109,5 +110,13 @@ public class RuleKpiLogVo {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public boolean isSummary() {
+        return summary;
+    }
+
+    public void setSummary(boolean summary) {
+        this.summary = summary;
     }
 }

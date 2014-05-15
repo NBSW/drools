@@ -1,6 +1,5 @@
 package com.zjhcsoft.rule.engine.util;
 
-import com.zjhcsoft.rule.datadispose.service.RuleBaseService;
 import com.zjhcsoft.rule.engine.component.RuleEngine;
 import com.zjhcsoft.rule.engine.component.RuleEngineEvent;
 import org.kie.api.definition.type.FactType;
@@ -22,8 +21,8 @@ public class EngineUtil {
 
     private static RuleEngine ruleEngine;
 
-    public static Future<ResultMessage> exec(String ruleScript, List<RuleEngineEvent> engineEventList, List facts, List params, int index,Map<String,Object> globalMap) {
-        return ruleEngine.execute(ruleScript, engineEventList, facts, params, index,globalMap);
+    public static Future<ResultMessage> exec(String ruleScript, List<RuleEngineEvent> engineEventList, List facts, List params, int index, Map<String, Object> globalMap) {
+        return ruleEngine.execute(ruleScript, engineEventList, facts, params, index, globalMap);
     }
 
     public static void removeRuleBase(String ruleContent) {
@@ -32,6 +31,10 @@ public class EngineUtil {
 
     public static FactType getFactType(String ruleContent, Long pId, Long tId) {
         return ruleEngine.getFactType(ruleContent, getPackageName(pId), getTypeName(tId));
+    }
+
+    public static void updateKnowledge(String new_script, String old_script) {
+        ruleEngine.updateKnowledge(new_script, old_script);
     }
 
     public static String getPackageName(Long id) {

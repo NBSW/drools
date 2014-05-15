@@ -11,14 +11,14 @@ import java.util.*;
  */
 public class FactTypeColumnUtil {
     public static List<String> columnList(FactType factType) {
-        if(null==factType){
+        if (null == factType) {
             return Collections.emptyList();
         }
         List<FactField> factFieldList = factType.getFields();
         List<String> fieldList = new ArrayList<>();
         for (FactField field : factFieldList) {
             String fieldName = field.getName();
-            if (!(RuleConstants.RuleColumn.Rule.RULE_STEP + "|" + RuleConstants.RuleColumn.Value.RULE_EXPR + "|" + RuleConstants.RuleColumn.Value.RULE_VALUE).contains(fieldName)) {
+            if (!RuleConstants.RuleColumn.Rule.RULE_STEP.equals(fieldName) && !RuleConstants.RuleColumn.Value.RULE_EXPR.equals(fieldName) && !RuleConstants.RuleColumn.Value.RULE_VALUE.equals(fieldName)) {
                 fieldList.add(fieldName);
             }
         }
@@ -30,7 +30,7 @@ public class FactTypeColumnUtil {
         Map<String, Class> fieldMap = new HashMap<>();
         for (FactField field : factFieldList) {
             String fieldName = field.getName();
-            if (!(RuleConstants.RuleColumn.Rule.RULE_STEP + "|" + RuleConstants.RuleColumn.Value.RULE_EXPR + "|" + RuleConstants.RuleColumn.Value.RULE_VALUE).contains(fieldName)) {
+            if (!RuleConstants.RuleColumn.Rule.RULE_STEP.equals(fieldName) && !RuleConstants.RuleColumn.Value.RULE_EXPR.equals(fieldName) && !RuleConstants.RuleColumn.Value.RULE_VALUE.equals(fieldName)) {
                 fieldMap.put(fieldName, field.getType());
             }
         }

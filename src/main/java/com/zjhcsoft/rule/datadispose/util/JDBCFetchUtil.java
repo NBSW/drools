@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -88,11 +89,13 @@ public class JDBCFetchUtil {
     }
 
     public void createCursor(String sql, Object[] arguments) throws Exception {
+        logger.debug("SQL:{} , Args:{}",sql,arguments.toString());
         Assert.notNull(connection);
         try {
             psmt = connection.prepareStatement(sql);
-            if (null != arguments) {
-                for (int i = 0; i < arguments.length; i++) {
+            if (null != arguments && sql.contains("?")) {
+                int paramCount = StringUtils.countOccurrencesOf(sql,"?");
+                for (int i = 0; i < paramCount; i++) {
                     psmt.setObject(i + 1, arguments[i]);
                 }
             }

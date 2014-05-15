@@ -49,11 +49,13 @@ public class RuleKpiResultSummaryServiceImpl implements RuleKpiResultSummaryServ
     }
 
     @Override
+    @Transactional("jdbcTransactionManager")
     public void save(List<RuleKpiResultSummary> summaryList) {
         rkrDao.save(summaryList);
     }
 
     @Override
+    @Transactional("jdbcTransactionManager")
     public int save(RuleKpiResultSummary summary) {
         return rkrDao.saveSummary(summary);
     }

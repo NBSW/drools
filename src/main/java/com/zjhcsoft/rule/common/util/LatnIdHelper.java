@@ -1,11 +1,8 @@
 package com.zjhcsoft.rule.common.util;
 
-import com.alibaba.fastjson.JSON;
-import com.zjhcsoft.biap.adaptor.objectProxy.CompanyInsideProxy;
 import com.zjhcsoft.biap.adaptor.service.ObjectAccessor;
 import com.zjhcsoft.qin.exchange.service.ServiceHelper;
 import com.zjhcsoft.qin.exchange.utils.PropertyHelper;
-import com.zjhcsoft.qin.exchange.utils.SpringPropertyHelper;
 import com.zjhcsoft.rule.common.RuleConstants;
 import com.zjhcsoft.rule.common.entity.BIAPAuthedInfo;
 import org.springframework.stereotype.Component;
@@ -14,9 +11,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Created by XuanLubin on 2014/4/4. 10:33

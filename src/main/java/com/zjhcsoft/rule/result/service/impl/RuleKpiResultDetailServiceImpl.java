@@ -36,4 +36,10 @@ public class RuleKpiResultDetailServiceImpl implements RuleKpiResultDetailServic
     public void delete(String kpiCode, String dateCd, String dimId) {
         ruleKpiResultDao.delete(kpiCode, dateCd, dimId);
     }
+
+    @Override
+    public RuleKpiResultDetail fetchDetail(String kpiCode, String dateCd, String dimId) {
+        List<RuleKpiResultDetail> detailList = ruleKpiResultDao.fetch(kpiCode, dateCd, dimId);
+        return detailList.size()>0?detailList.get(0):null;
+    }
 }

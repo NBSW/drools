@@ -14,7 +14,6 @@ import java.util.concurrent.Future;
 /**
  * Created by XuanLubin on 2014/4/2. 11:23
  */
-@Component
 public class ResultSummaryHandler {
 
     @Inject
@@ -26,7 +25,10 @@ public class ResultSummaryHandler {
     @Async("summaryTaskExecutor")
     public Future<List<Long>> execute(RuleGroupTask task, RuleKpiDefine kpi) {
 
-        summaryService.summaryDbSide(kpi.getKpiCode(), task.getDateCd());
+        //判断指标是否需要做汇总操作
+        if(kpi.isSummary()) {
+            summaryService.summaryDbSide(kpi.getKpiCode(), task.getDateCd());
+        }
 
         // todo 汇总完成 call 组合指标
         //查询依赖规则

@@ -20,6 +20,7 @@ public class RuleConstants {
         static final String RULE_GROUP_BASE_RULE_KPI = "RULE_GROUP_BASE_RULE_KPI";
         static final String RULE_GROUP_MIX_RULE_KPI = "RULE_GROUP_MIX_RULE_KPI";
         static final String MIX_BASE_KPI_REL = "KPI_KPI_REL";
+        static final String MIX_BASE_KPI_REL_2 = "KPI_KPI_REL_2";
         static final String DATA_PARAM = "DATA_PARAM";
         int DATA_MODEL = 1, PARAM_MODEL = 3;
         int BASE_KPI = 0, MIX_KPI = 1;

@@ -29,6 +29,7 @@
                 <td width="10%" align="right">指标代码</td>
                 <td width="23%">
                     <input name="kpiCode" type="text" id="kpiCode" class="input_normal"/>
+                    <label title="不需做汇总请取消该状态,组合指标不根据该属性判断,默认汇总"><input id="summary" type="checkbox"/> 汇总</label>
                 </td>
                 <td width="10%" align="right">指标名称</td>
                 <td width="23%">
@@ -48,8 +49,13 @@
                 </td>
                 <td align="right">是否为组合</td>
                 <td tname="otherParam">
-                    <input name="type" type="checkbox" id="zh"/>
-                    <label for="zh">是</label>
+                    <label style="position: relative;top: -5px;"><input name="type" type="checkbox" id="zh"/>是</label>
+                    <style type="text/css">
+                        .mItop{
+                            top: 5px;
+                        }
+                    </style>
+                    <input type="text" id="rel_kpi_list" style="width:170px;" />
                 </td>
                 <td align="right" tname="otherParam">其他参数:</td>
                 <td tname="otherParam">
@@ -114,5 +120,6 @@
 <script type="text/javascript" src="kpiFilter.js"></script>
 <script type="text/javascript" src="kpiRule.js"></script>
 <script type="text/javascript" src="kpiRuleClick.js"></script>
+<script type="text/javascript" src="kpiRelKPIs.js"></script>
 </body>
 </html>

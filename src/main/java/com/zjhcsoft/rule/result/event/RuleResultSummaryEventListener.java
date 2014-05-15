@@ -2,24 +2,19 @@ package com.zjhcsoft.rule.result.event;
 
 import com.zjhcsoft.rule.common.RuleConstants;
 import com.zjhcsoft.rule.common.util.DimFieldProcessor;
+import com.zjhcsoft.rule.common.util.NaNNumberUtil;
 import com.zjhcsoft.rule.config.entity.RuleGroupTask;
 import com.zjhcsoft.rule.config.entity.RuleKpiDefine;
 import com.zjhcsoft.rule.config.entity.RuleTableDefine;
-import com.zjhcsoft.rule.engine.component.RuleEngineEvent;
-import com.zjhcsoft.rule.result.entity.RuleKpiResultDetail;
 import com.zjhcsoft.rule.result.entity.RuleKpiResultSummary;
-import com.zjhcsoft.rule.result.service.RuleKpiResultDetailService;
 import com.zjhcsoft.rule.result.service.RuleKpiResultSummaryService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.kie.api.definition.type.FactType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,11 +34,21 @@ public class RuleResultSummaryEventListener extends RuleResultBaseEventListener<
 
     @Override
     protected RuleKpiResultSummary extractItem(Map<String, Object> mapResult, RuleTableDefine dataTableDefine, RuleGroupTask ruleGroupTask, RuleKpiDefine ruleKpiDefine) {
+        String dimValue = DimFieldProcessor.exec(mapResult.get(dataTableDefine.getDimField()));
+        if (StringUtils.isBlank(dimValue)) {
+            return null;
+        }
+
         RuleKpiResultSummary ruleKpiResult = new RuleKpiResultSummary();
         //todo 设置结果值
-        ruleKpiResult.setSumValue((Float) mapResult.get(RuleConstants.RuleColumn.Value.RULE_VALUE));
+        float sumValue = (float) mapResult.get(RuleConstants.RuleColumn.Value.RULE_VALUE);
+        if (!NaNNumberUtil.isNaN(sumValue)) {
+            ruleKpiResult.setSumValue(sumValue);
+        } else {
+            ruleKpiResult.setSumValue(0);
+        }
         ruleKpiResult.setRemark(String.valueOf(mapResult.get(RuleConstants.RuleColumn.Value.RULE_EXPR)));
-        ruleKpiResult.setDimId(DimFieldProcessor.exec(mapResult.get(dataTableDefine.getDimField())));
+        ruleKpiResult.setDimId(dimValue);
         ruleKpiResult.setDateCd(ruleGroupTask.getDateCd());
         ruleKpiResult.setLatnId(dataTableDefine.getLatnId());
         ruleKpiResult.setKpiCode(ruleKpiDefine.getKpiCode());
@@ -65,5 +70,4 @@ public class RuleResultSummaryEventListener extends RuleResultBaseEventListener<
     public void setService(RuleKpiResultSummaryService service) {
         RuleResultSummaryEventListener.service = service;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.zjhcsoft.rule.result.dao;
 
 import com.zjhcsoft.rule.result.entity.RuleKpiResultDetail;
+import com.zjhcsoft.rule.result.entity.RuleKpiResultSummary;
 
 import java.util.List;
 

@@ -58,9 +58,9 @@ public class RuleServiceImpl extends RuleMixServiceImpl {
         if (!fetchSql.toString().contains("where")) {
             fetchSql.append(" where 1=1 ");
         }
-        if (StringUtils.isNotBlank(define.getDateField())) {
+     /*   if (StringUtils.isNotBlank(define.getDateField())) {
             fetchSql.append("and ").append(define.getDateField()).append(" = ? ");
-        }
+        }*/
        /* if (RuleConstants.Type.DATA_MODEL == define.getType()) {
             JSONObject object = JSONObject.parseObject(define.getFields());
             JSONObject tagColumn = object.getJSONObject(RuleConstants.RuleJsonKey.TAG_COLUMN);
@@ -69,7 +69,8 @@ public class RuleServiceImpl extends RuleMixServiceImpl {
             fetchSql.append("or ").append(tagColumn.getString("name")).append(" is null)");
         } else */
 
-        try {
+
+/*        try {
             JSONObject object = JSONObject.parseObject(define.getFields());
             JSONObject otherParam = object.getJSONObject(RuleConstants.RuleJsonKey.OTHER_PARAM);
             if (null != otherParam) {
@@ -80,7 +81,7 @@ public class RuleServiceImpl extends RuleMixServiceImpl {
         } catch (Exception e) {
             e.printStackTrace();
             logger.debug("其他参数处理异常");
-        }
+        }*/
 
 
         if (RuleConstants.Type.PARAM_MODEL == define.getType() && StringUtils.isNotBlank(define.getDimField())) {
@@ -89,7 +90,8 @@ public class RuleServiceImpl extends RuleMixServiceImpl {
 
         String _sql = fetchSql.toString().toLowerCase();
         _sql = sqlExecute.executeColumn(_sql, factType);
-        _sql = sqlExecute.executeSqlStaticParam(_sql, getRuleGroupTask());
+        _sql = sqlExecute.executeSqlStaticParam(_sql, getRuleGroupTask(),define);
+        _sql = sqlExecute.executeOtherParam(_sql,define,kpiDefine);
 
         logger.debug("{}模型数据获取SQL: {}", RuleConstants.Type.DATA_MODEL == define.getType() ? "数据" : "参数", _sql);
         return _sql;
